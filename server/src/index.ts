@@ -1,33 +1,41 @@
 import { MikroORM } from "@mikro-orm/core";
-import { MongoDriver } from "@mikro-orm/mongodb";
 import { __prod__ } from "./constant";
-import { Post } from "./entities/Post";
+// import { Post } from "./entities/Post";
 import "dotenv-safe/config";
+import microConfig from "./mikro-orm.config";
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import { HelloResolver } from "./resolvers/hello";
+import { PostResolver } from "./resolvers/post";
 
 const main = async () => {
-  // const orm = await MikroORM.init({
-  //   entities: [Post],
-  //   dbName: "reddit-server",
-  //   user: "postgres",
-  //   password: "3430004",
-  //   debug: !__prod__,
-  //   type: "postgresql",
-  // });
-  const orm = await MikroORM.init<MongoDriver>({
-    entities: [Post],
-    dbName: process.env.DATABASE_NAME,
-    clientUrl: process.env.MONGO_URI,
-    debug: !__prod__,
-    type: "mongo",
+  const orm = await MikroORM.init(microConfig);
+  await orm.getMigrator().up();
+
+  const PORT = process.env.PORT || 5000;
+
+  const app = express();
+
+  app.get("/", (_, res) => {
+    res.send("hello");
   });
 
-  const post = orm.em.create(Post, {
-    title: "My first post",
-  } as Post);
-  await orm.em.persistAndFlush(post);
-  console.log("--------------sql 2----------------");
-  await orm.em.nativeInsert(Post, { title: "my first post 2" });
-  await orm.getSchemaGenerator().createSchema();
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [HelloResolver, PostResolver],
+      validate: false,
+    }),
+    context: () => ({ em: orm.em }),
+  });
+
+  await apolloServer.start();
+
+  apolloServer.applyMiddleware({ app });
+
+  app.listen(PORT, () => {
+    console.log(`server listening on port: ${PORT}....`);
+  });
 };
 
 main().catch((err) => {
