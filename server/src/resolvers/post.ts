@@ -47,7 +47,7 @@ export class PostResolver {
       post.title = title;
       await em.persistAndFlush(post);
     }
-    await em.persistAndFlush(post);
+
     return post;
   }
 }

@@ -48,7 +48,6 @@ let PostResolver = class PostResolver {
                 post.title = title;
                 yield em.persistAndFlush(post);
             }
-            yield em.persistAndFlush(post);
             return post;
         });
     }
