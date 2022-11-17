@@ -14,6 +14,7 @@ import { createClient } from "redis";
 import connectRedis from "connect-redis";
 import session from "express-session";
 const RedisStore = connectRedis(session);
+import "dotenv-safe/config";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -28,9 +29,19 @@ const main = async () => {
 
   app.use(
     session({
-      store: new RedisStore({ client: redisClient }),
+      name: "qid",
+      store: new RedisStore({
+        client: redisClient,
+        disableTouch: true,
+      }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+        httpOnly: true,
+        sameSite: "lax", // csrf
+        secure: __prod__, // cookie only works in https
+      },
       saveUninitialized: false,
-      secret: "keyboard cat",
+      secret: "yesrererferferere",
       resave: false,
     })
   );
@@ -44,7 +55,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: () => ({ em: orm.em }),
+    context: ({ req, res }) => ({ em: orm.em, req, res }),
   });
 
   await apolloServer.start();
