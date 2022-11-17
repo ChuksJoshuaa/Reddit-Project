@@ -56,6 +56,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
+    //plugins eliminate that fancy sandbox playground to use the default one
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
     context: ({ req, res }) => ({ em: orm.em, req, res }),
   });
