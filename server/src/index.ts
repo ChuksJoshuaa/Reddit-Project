@@ -15,6 +15,7 @@ import connectRedis from "connect-redis";
 import session from "express-session";
 const RedisStore = connectRedis(session);
 import "dotenv-safe/config";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -55,6 +56,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
     context: ({ req, res }) => ({ em: orm.em, req, res }),
   });
 
