@@ -1,5 +1,6 @@
 import { __prod__ } from "./constant";
 import { Post } from "./entities/Post";
+import { User } from "./entities/User";
 import { MikroORM } from "@mikro-orm/core";
 import path from "path";
 import "dotenv-safe/config";
@@ -10,7 +11,7 @@ export default {
     path: path.join(__dirname, "./migrations"),
     pattern: /^[\w-]+\d+\.[tj]s$/,
   },
-  entities: [Post],
+  entities: [Post, User],
   dbName: process.env.DATABASE_URL,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
