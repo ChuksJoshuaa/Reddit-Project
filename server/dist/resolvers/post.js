@@ -48,8 +48,13 @@ let PostResolver = class PostResolver {
                 post.title = title;
                 yield em.persistAndFlush(post);
             }
-            yield em.persistAndFlush(post);
             return post;
+        });
+    }
+    deletePost(id, { em }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield em.nativeDelete(Post_1.Post, { id });
+            return true;
         });
     }
 };
@@ -85,6 +90,14 @@ __decorate([
     __metadata("design:paramtypes", [Number, String, Object]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "updatePost", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __param(1, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], PostResolver.prototype, "deletePost", null);
 PostResolver = __decorate([
     (0, type_graphql_1.Resolver)()
 ], PostResolver);

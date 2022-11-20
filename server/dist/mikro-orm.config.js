@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const constant_1 = require("./constant");
 const Post_1 = require("./entities/Post");
+const User_1 = require("./entities/User");
 const path_1 = __importDefault(require("path"));
 require("dotenv-safe/config");
 exports.default = {
@@ -12,7 +13,7 @@ exports.default = {
         path: path_1.default.join(__dirname, "./migrations"),
         pattern: /^[\w-]+\d+\.[tj]s$/,
     },
-    entities: [Post_1.Post],
+    entities: [Post_1.Post, User_1.User],
     dbName: process.env.DATABASE_URL,
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,

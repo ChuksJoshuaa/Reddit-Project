@@ -47,7 +47,19 @@ export class PostResolver {
       post.title = title;
       await em.persistAndFlush(post);
     }
-    await em.persistAndFlush(post);
+
     return post;
+  }
+
+  //Delete Post
+  //It will return a boolean after specific post has been deleted
+  @Mutation(() => Boolean)
+  async deletePost(
+    @Arg("id") id: number,
+
+    @Ctx() { em }: MyContext
+  ): Promise<boolean> {
+    await em.nativeDelete(Post, { id });
+    return true;
   }
 }
