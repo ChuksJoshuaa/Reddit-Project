@@ -34,11 +34,13 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const orm = yield core_1.MikroORM.init(mikro_orm_config_1.default);
     yield orm.getMigrator().up();
     const PORT = process.env.PORT || 5000;
+    const secret_key = process.env.SESSION_SECRET;
     const app = (0, express_1.default)();
     let redisClient = (0, redis_1.createClient)({ legacyMode: true });
     redisClient.connect().catch(console.error);
     app.use((0, cors_1.default)({ origin: process.env.CORS_ORIGIN, credentials: true }));
     app.use((0, express_session_1.default)({
+        secret: secret_key || "",
         name: process.env.COOKIE_NAME,
         store: new RedisStore({
             client: redisClient,
@@ -51,7 +53,6 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             secure: constant_1.__prod__,
         },
         saveUninitialized: false,
-        secret: "yesrererferferere",
         resave: false,
     }));
     app.get("/", (_, res) => {

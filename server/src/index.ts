@@ -23,6 +23,7 @@ const main = async () => {
   await orm.getMigrator().up();
 
   const PORT = process.env.PORT || 5000;
+  const secret_key = process.env.SESSION_SECRET;
 
   const app = express();
 
@@ -33,6 +34,7 @@ const main = async () => {
 
   app.use(
     session({
+      secret: secret_key || "",
       name: process.env.COOKIE_NAME,
       store: new RedisStore({
         client: redisClient,
@@ -45,7 +47,6 @@ const main = async () => {
         secure: __prod__, // cookie only works in https
       },
       saveUninitialized: false,
-      secret: "yesrererferferere",
       resave: false,
     })
   );
