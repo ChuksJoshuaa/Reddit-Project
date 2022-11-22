@@ -22,7 +22,7 @@ const Register: React.FC<IProps> = () => {
         initialValues={{ username: "", password: "" }}
         onSubmit={(values) => {
           console.log(values);
-          register(values);
+          return register(values);
         }}
       >
         {({ isSubmitting }) => (

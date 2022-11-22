@@ -28,6 +28,7 @@ const connect_redis_1 = __importDefault(require("connect-redis"));
 const express_session_1 = __importDefault(require("express-session"));
 const RedisStore = (0, connect_redis_1.default)(express_session_1.default);
 require("dotenv-safe/config");
+const cors_1 = __importDefault(require("cors"));
 const apollo_server_core_1 = require("apollo-server-core");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const orm = yield core_1.MikroORM.init(mikro_orm_config_1.default);
@@ -36,8 +37,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, express_1.default)();
     let redisClient = (0, redis_1.createClient)({ legacyMode: true });
     redisClient.connect().catch(console.error);
+    app.use((0, cors_1.default)({ origin: process.env.CORS_ORIGIN, credentials: true }));
     app.use((0, express_session_1.default)({
-        name: "qid",
+        name: process.env.COOKIE_NAME,
         store: new RedisStore({
             client: redisClient,
             disableTouch: true,
@@ -64,7 +66,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         context: ({ req, res }) => ({ em: orm.em, req, res }),
     });
     yield apolloServer.start();
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({
+        app,
+        cors: false,
+    });
     app.listen(PORT, () => {
         console.log(`server listening on port: ${PORT}....`);
     });

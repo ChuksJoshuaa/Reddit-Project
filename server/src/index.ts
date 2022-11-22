@@ -15,6 +15,7 @@ import connectRedis from "connect-redis";
 import session from "express-session";
 const RedisStore = connectRedis(session);
 import "dotenv-safe/config";
+import cors from "cors";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 
 const main = async () => {
@@ -28,9 +29,11 @@ const main = async () => {
   let redisClient = createClient({ legacyMode: true });
   redisClient.connect().catch(console.error);
 
+  app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
+
   app.use(
     session({
-      name: "qid",
+      name: process.env.COOKIE_NAME,
       store: new RedisStore({
         client: redisClient,
         disableTouch: true,
@@ -63,7 +66,10 @@ const main = async () => {
 
   await apolloServer.start();
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: false,
+  });
 
   app.listen(PORT, () => {
     console.log(`server listening on port: ${PORT}....`);

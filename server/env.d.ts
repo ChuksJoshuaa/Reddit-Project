@@ -9,5 +9,6 @@ declare namespace NodeJS {
     NODE_ENV: string;
     MONGO_URI: string;
     DATABASE_NAME: string;
+    COOKIE_NAME: string;
   }
 }
