@@ -1,34 +1,56 @@
 import { Field, Form, Formik } from "formik";
+import { useState } from "react";
 import {
   FormControl,
   FormLabel,
   Input,
   FormErrorMessage,
+  Box,
+  Button,
 } from "@chakra-ui/react";
-import { Wrapper } from "../components";
+import { InputField, Wrapper } from "../components";
 
 interface IProps {}
 
 const Register: React.FC<IProps> = () => {
+  const handleEnterKeyPress = (e: any) => {
+    e.preventDefault();
+    if (e.key === "Enter" || e.keyCode === 13) {
+      handleSubmit(e);
+    }
+  };
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+  };
   return (
-    <Wrapper>
+    <Wrapper variant="small">
       <Formik
         initialValues={{ username: "", password: "" }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => {
+          console.log(values);
+        }}
       >
-        {({ values, handleChange }) => (
-          <form>
-            <FormControl>
-              <FormLabel htmlFor="username">Username</FormLabel>
-              <Input
-                placeholder="username"
-                id="username"
-                value={values.username}
-                onChange={handleChange}
+        {({ isSubmitting }) => (
+          <Form>
+            <InputField name="username" placeholder="name" label="Username" />
+            <Box mt={4}>
+              <InputField
+                name="password"
+                placeholder="password"
+                label="Password"
+                type="password"
               />
-              {/* <FormErrorMessage>{form.errors.name}</FormErrorMessage> */}
-            </FormControl>
-          </form>
+            </Box>
+            <Button
+              mt={4}
+              type="submit"
+              isLoading={isSubmitting}
+              colorScheme="teal"
+            >
+              register
+            </Button>
+          </Form>
         )}
       </Formik>
     </Wrapper>
