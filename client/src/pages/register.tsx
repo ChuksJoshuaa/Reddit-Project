@@ -1,28 +1,18 @@
-import { Field, Form, Formik } from "formik";
-import { useState } from "react";
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  FormErrorMessage,
-  Box,
-  Button,
-} from "@chakra-ui/react";
+import { Form, Formik } from "formik";
+
+import { Box, Button } from "@chakra-ui/react";
 import { InputField, Wrapper } from "../components";
 
 interface IProps {}
 
 const Register: React.FC<IProps> = () => {
-  const handleEnterKeyPress = (e: any) => {
-    e.preventDefault();
-    if (e.key === "Enter" || e.keyCode === 13) {
-      handleSubmit(e);
-    }
-  };
+  // const handleEnterKeyPress = (e: any) => {
+  //   e.preventDefault();
+  //   if (e.key === "Enter" || e.keyCode === 13) {
+  //     handleSubmit(e);
+  //   }
+  // };
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-  };
   return (
     <Wrapper variant="small">
       <Formik
