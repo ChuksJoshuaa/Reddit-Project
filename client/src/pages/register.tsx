@@ -3,6 +3,7 @@ import { Box, Button } from "@chakra-ui/react";
 import { InputField, Wrapper } from "../components";
 import { useRegisterMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
+import { useRouter } from "next/router";
 
 interface IProps {}
 
@@ -14,6 +15,7 @@ const Register: React.FC<IProps> = () => {
   //   }
   // };
   const [, register] = useRegisterMutation();
+  const Router = useRouter();
 
   return (
     <Wrapper variant="small">
@@ -21,11 +23,12 @@ const Register: React.FC<IProps> = () => {
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await register(values);
-          console.log(values);
-          console.log(response);
 
           if (response.data?.register.errors) {
             setErrors(toErrorMap(response.data?.register.errors));
+          } else if (response.data?.register.user) {
+            //redirect to the home page
+            Router.push("/");
           }
         }}
       >
