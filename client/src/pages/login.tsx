@@ -42,7 +42,7 @@ const Login: React.FC<IProps> = () => {
               isLoading={isSubmitting}
               colorScheme="teal"
             >
-              register
+              login
             </Button>
           </Form>
         )}
