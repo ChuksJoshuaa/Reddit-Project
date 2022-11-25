@@ -16,6 +16,8 @@ import session from "express-session";
 const RedisStore = connectRedis(session);
 import "dotenv-safe/config";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 
 const main = async () => {
@@ -26,6 +28,9 @@ const main = async () => {
   const secret_key = process.env.SESSION_SECRET;
 
   const app = express();
+
+  // let’s you use the cookieParser in your application
+  app.use(cookieParser());
 
   let redisClient = createClient({ legacyMode: true });
   redisClient.connect().catch(console.error);
@@ -42,8 +47,8 @@ const main = async () => {
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
-        httpOnly: true,
-        sameSite: "lax", // csrf
+        httpOnly: false,
+        sameSite: "none", // csrf
         secure: __prod__, // cookie only works in https
       },
       saveUninitialized: false,
@@ -60,8 +65,16 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
+
     //plugins eliminate that fancy sandbox playground to use the default one
-    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+    plugins: [
+      ApolloServerPluginLandingPageGraphQLPlayground({
+        //add this settings, so that you can access cookie in the browser
+        settings: {
+          "request.credentials": "same-origin",
+        },
+      }),
+    ],
     context: ({ req, res }) => ({ em: orm.em, req, res }),
   });
 

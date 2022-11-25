@@ -29,6 +29,7 @@ const express_session_1 = __importDefault(require("express-session"));
 const RedisStore = (0, connect_redis_1.default)(express_session_1.default);
 require("dotenv-safe/config");
 const cors_1 = __importDefault(require("cors"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const apollo_server_core_1 = require("apollo-server-core");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const orm = yield core_1.MikroORM.init(mikro_orm_config_1.default);
@@ -36,6 +37,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const PORT = process.env.PORT || 5000;
     const secret_key = process.env.SESSION_SECRET;
     const app = (0, express_1.default)();
+    app.use((0, cookie_parser_1.default)());
     let redisClient = (0, redis_1.createClient)({ legacyMode: true });
     redisClient.connect().catch(console.error);
     app.use((0, cors_1.default)({ origin: process.env.CORS_ORIGIN, credentials: true }));
@@ -48,8 +50,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         }),
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
-            httpOnly: true,
-            sameSite: "lax",
+            httpOnly: false,
+            sameSite: "none",
             secure: constant_1.__prod__,
         },
         saveUninitialized: false,
@@ -63,7 +65,13 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
             validate: false,
         }),
-        plugins: [(0, apollo_server_core_1.ApolloServerPluginLandingPageGraphQLPlayground)()],
+        plugins: [
+            (0, apollo_server_core_1.ApolloServerPluginLandingPageGraphQLPlayground)({
+                settings: {
+                    "request.credentials": "same-origin",
+                },
+            }),
+        ],
         context: ({ req, res }) => ({ em: orm.em, req, res }),
     });
     yield apolloServer.start();

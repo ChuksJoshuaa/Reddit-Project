@@ -70,8 +70,10 @@ UserResponse = __decorate([
 let UserResolver = class UserResolver {
     me({ req, em }) {
         return __awaiter(this, void 0, void 0, function* () {
+            let result = "";
             if (!req.session.userId) {
-                return null;
+                result = "This field is null";
+                console.log(result);
             }
             const user = yield em.findOne(User_1.User, { id: req.session.userId });
             return user;
@@ -157,7 +159,6 @@ let UserResolver = class UserResolver {
                 };
             }
             req.session.userId = user.id;
-            console.log(req.session.userId);
             return {
                 user,
             };
