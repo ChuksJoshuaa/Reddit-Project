@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 import { useMeQuery } from "../generated/graphql";
@@ -8,12 +8,11 @@ interface IProps {}
 const Navbar: React.FC<IProps> = () => {
   const [{ data, fetching }] = useMeQuery();
 
-  console.log(data);
-
   let body = null;
 
   //data is loading
   if (fetching) {
+    //user not logged in
   }
 
   //user not logged in
@@ -30,10 +29,17 @@ const Navbar: React.FC<IProps> = () => {
 
   //user is logged in
   else {
-    body = <Box>{data.me.username}</Box>;
+    body = (
+      <Flex>
+        <Box mr={2}>{data.me.username}</Box>
+        <Button type="button" variant="link">
+          Logout
+        </Button>
+      </Flex>
+    );
   }
   return (
-    <Flex bg="tomato" p={4} fontWeight="bold">
+    <Flex bg="tan" p={4} fontWeight="bold">
       <Box ml={"auto"}>{body}</Box>
     </Flex>
   );
