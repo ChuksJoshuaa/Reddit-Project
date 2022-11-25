@@ -1,0 +1,6 @@
+# Note, you can create as many fragments as you want to avoid repetition in your mutations and queries
+
+fragment RegularUser on User {
+  id
+  username
+}
