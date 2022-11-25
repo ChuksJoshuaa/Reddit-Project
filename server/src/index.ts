@@ -71,7 +71,7 @@ const main = async () => {
       ApolloServerPluginLandingPageGraphQLPlayground({
         //add this settings, so that you can access cookie in the browser
         settings: {
-          "request.credentials": "same-origin",
+          "request.credentials": "include",
         },
       }),
     ],

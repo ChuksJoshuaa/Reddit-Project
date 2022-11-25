@@ -68,7 +68,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         plugins: [
             (0, apollo_server_core_1.ApolloServerPluginLandingPageGraphQLPlayground)({
                 settings: {
-                    "request.credentials": "same-origin",
+                    "request.credentials": "include",
                 },
             }),
         ],
