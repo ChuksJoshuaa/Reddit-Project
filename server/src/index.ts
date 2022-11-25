@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { MikroORM } from "@mikro-orm/core";
-import { __prod__ } from "./constant";
+import { __prod__, COOKIE_NAME } from "./constant";
 // import { Post } from "./entities/Post";
 import "dotenv-safe/config";
 import microConfig from "./mikro-orm.config";
@@ -40,7 +40,7 @@ const main = async () => {
   app.use(
     session({
       secret: secret_key || "",
-      name: process.env.COOKIE_NAME,
+      name: COOKIE_NAME,
       store: new RedisStore({
         client: redisClient,
         disableTouch: true,

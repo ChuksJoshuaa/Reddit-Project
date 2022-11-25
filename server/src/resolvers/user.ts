@@ -12,6 +12,8 @@ import { MyContext } from "../types";
 import { User } from "../entities/User";
 import argon2 from "argon2";
 import { EntityManager } from "@mikro-orm/postgresql";
+import "dotenv-safe/config";
+import { COOKIE_NAME } from "../constant";
 
 //We use it for argument. i.e @Arg
 @InputType()
@@ -158,5 +160,24 @@ export class UserResolver {
     return {
       user,
     };
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyContext) {
+    //We used New Promise because this is a callback
+    return new Promise((resolve) =>
+      //clear the session from Redis
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          resolve(false);
+          return;
+        }
+
+        //Clears the cookie from the browser
+        res.clearCookie(COOKIE_NAME);
+        resolve(true);
+      })
+    );
   }
 }
