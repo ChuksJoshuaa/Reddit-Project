@@ -168,12 +168,12 @@ let UserResolver = class UserResolver {
     }
     logout({ req, res }) {
         return new Promise((resolve) => req.session.destroy((err) => {
+            res.clearCookie(constant_1.COOKIE_NAME);
             if (err) {
                 console.log(err);
                 resolve(false);
                 return;
             }
-            res.clearCookie(constant_1.COOKIE_NAME);
             resolve(true);
         }));
     }

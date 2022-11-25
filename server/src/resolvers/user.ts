@@ -168,14 +168,14 @@ export class UserResolver {
     return new Promise((resolve) =>
       //clear the session from Redis
       req.session.destroy((err) => {
+        //Clears the cookie from the browser
+        res.clearCookie(COOKIE_NAME);
         if (err) {
           console.log(err);
           resolve(false);
           return;
         }
 
-        //Clears the cookie from the browser
-        res.clearCookie(COOKIE_NAME);
         resolve(true);
       })
     );
