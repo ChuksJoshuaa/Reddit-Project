@@ -61,4 +61,4 @@ const Register: React.FC<IProps> = () => {
 };
 
 //Without adding this, you cannot make a post request to server url, instead it will return to the default client url
-export default withUrqlClient(createUrqlClient, { ssr: true })(Register);
+export default withUrqlClient(createUrqlClient)(Register);

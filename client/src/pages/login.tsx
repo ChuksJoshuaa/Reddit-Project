@@ -53,4 +53,4 @@ const Login: React.FC<IProps> = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Login);
+export default withUrqlClient(createUrqlClient)(Login);

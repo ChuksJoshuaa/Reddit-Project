@@ -20,4 +20,7 @@ const Index = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Index);
+//{ ssr: true } => we use this when we are trying to load on the server side.
+// Also, we use this when will are trying to do any queries on the web page
+//And if the data that is queried is important to SEO for better performance
+export default withUrqlClient(createUrqlClient)(Index);
