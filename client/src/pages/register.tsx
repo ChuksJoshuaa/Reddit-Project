@@ -4,6 +4,8 @@ import { InputField, Wrapper } from "../components";
 import { useRegisterMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
 interface IProps {}
 
@@ -58,4 +60,5 @@ const Register: React.FC<IProps> = () => {
   );
 };
 
-export default Register;
+//Without adding this, you cannot make a post request to server url, instead it will return to the default client url
+export default withUrqlClient(createUrqlClient, { ssr: true })(Register);

@@ -1,5 +1,7 @@
 import React from "react";
 import { Navbar } from "../components";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Index = () => {
   return (
@@ -10,4 +12,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default withUrqlClient(createUrqlClient, { ssr: true })(Index);
