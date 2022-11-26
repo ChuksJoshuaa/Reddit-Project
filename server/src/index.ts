@@ -17,10 +17,11 @@ const RedisStore = connectRedis(session);
 import "dotenv-safe/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
+// import { sendEmail } from "../utils/sendEmail";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 
 const main = async () => {
+  // sendEmail("chuksjoshuaa@gmail.com", "Hello there");
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
 
