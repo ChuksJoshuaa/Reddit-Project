@@ -13,3 +13,9 @@ export const REGISTER_MUT = `
         }
     }
 `;
+
+export const LogoutDocument = `
+    mutation Logout {
+  logout
+}
+`;
