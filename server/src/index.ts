@@ -19,10 +19,14 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 // import { sendEmail } from "../utils/sendEmail";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+// import { User } from "./entities/User";
 
 const main = async () => {
   // sendEmail("chuksjoshuaa@gmail.com", "Hello there");
   const orm = await MikroORM.init(microConfig);
+
+  //delete all user from the database
+  // await orm.em.nativeDelete(User, {});
   await orm.getMigrator().up();
 
   const PORT = process.env.PORT || 5000;

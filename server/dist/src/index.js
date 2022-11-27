@@ -30,10 +30,8 @@ const RedisStore = (0, connect_redis_1.default)(express_session_1.default);
 require("dotenv-safe/config");
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const sendEmail_1 = require("../utils/sendEmail");
 const apollo_server_core_1 = require("apollo-server-core");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    (0, sendEmail_1.sendEmail)("chuksjoshuaa@gmail.com", "Hello there");
     const orm = yield core_1.MikroORM.init(mikro_orm_config_1.default);
     yield orm.getMigrator().up();
     const PORT = process.env.PORT || 5000;

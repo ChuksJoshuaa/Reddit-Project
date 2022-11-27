@@ -30,23 +30,8 @@ const User_1 = require("../entities/User");
 const argon2_1 = __importDefault(require("argon2"));
 require("dotenv-safe/config");
 const constant_1 = require("../constant");
-let UserPasswordInput = class UserPasswordInput {
-};
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], UserPasswordInput.prototype, "email", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], UserPasswordInput.prototype, "username", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], UserPasswordInput.prototype, "password", void 0);
-UserPasswordInput = __decorate([
-    (0, type_graphql_1.InputType)()
-], UserPasswordInput);
+const validateRegister_1 = require("../../utils/validateRegister");
+const UserPasswordInput_1 = require("../../utils/UserPasswordInput");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -87,35 +72,9 @@ let UserResolver = class UserResolver {
     }
     register(options, { em, req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (options.email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) === null) {
-                return {
-                    errors: [
-                        {
-                            field: "email",
-                            message: "Please provide a valid email",
-                        },
-                    ],
-                };
-            }
-            if (options.username.length <= 2) {
-                return {
-                    errors: [
-                        {
-                            field: "username",
-                            message: "Username length must be greater than 2",
-                        },
-                    ],
-                };
-            }
-            if (options.password.length <= 2) {
-                return {
-                    errors: [
-                        {
-                            field: "password",
-                            message: "Password length must be greater than 2",
-                        },
-                    ],
-                };
+            const errors = (0, validateRegister_1.validateRegister)(options);
+            if (errors) {
+                return { errors };
             }
             const hashedPassword = yield argon2_1.default.hash(options.password);
             let user;
@@ -207,7 +166,7 @@ __decorate([
     __param(0, (0, type_graphql_1.Arg)("options")),
     __param(1, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [UserPasswordInput, Object]),
+    __metadata("design:paramtypes", [UserPasswordInput_1.UserPasswordInput, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "register", null);
 __decorate([

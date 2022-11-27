@@ -16,7 +16,6 @@ const Navbar: React.FC<IProps> = () => {
     // pause: isServer(),
   });
 
-  console.log(data);
 
   let body = null;
 
