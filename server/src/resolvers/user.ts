@@ -15,7 +15,7 @@ import "dotenv-safe/config";
 import { COOKIE_NAME } from "../constant";
 import { validateRegister } from "../../utils/validateRegister";
 import { UserPasswordInput } from "../../utils/UserPasswordInput";
-
+import { sendEmail } from "../../utils/sendEmail";
 @ObjectType()
 class FieldError {
   @Field()
@@ -40,16 +40,23 @@ export class UserResolver {
   @Mutation(() => Boolean)
   async forgotPassword(@Arg("email") email: string, @Ctx() { em }: MyContext) {
     const user = await em.findOne(User, { email });
+    if (user === null || user === undefined || !user) {
+      //the email is not in the database
+      return true;
+    }
+
+    let token = "wsdjgskjdhhwdwd";
+    const textMessage = `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">reset password</a>`;
+    await sendEmail(email, textMessage);
     return user;
   }
 
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req, em }: MyContext) {
     // you are not logged in
-    let result = "";
+
     if (!req.session.userId) {
-      result = "This field is null";
-      console.log(result);
+      return null;
     }
 
     const user = await em.findOne(User, { id: req.session.userId });

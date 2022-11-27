@@ -32,6 +32,7 @@ require("dotenv-safe/config");
 const constant_1 = require("../constant");
 const validateRegister_1 = require("../../utils/validateRegister");
 const UserPasswordInput_1 = require("../../utils/UserPasswordInput");
+const sendEmail_1 = require("../../utils/sendEmail");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -62,15 +63,19 @@ let UserResolver = class UserResolver {
     forgotPassword(email, { em }) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield em.findOne(User_1.User, { email });
+            if (user === null || user === undefined || !user) {
+                return true;
+            }
+            let token = "wsdjgskjdhhwdwd";
+            const textMessage = `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">reset password</a>`;
+            yield (0, sendEmail_1.sendEmail)(email, textMessage);
             return user;
         });
     }
     me({ req, em }) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = "";
             if (!req.session.userId) {
-                result = "This field is null";
-                console.log(result);
+                return null;
             }
             const user = yield em.findOne(User_1.User, { id: req.session.userId });
             return user;

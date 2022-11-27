@@ -17,12 +17,12 @@ const RedisStore = connectRedis(session);
 import "dotenv-safe/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-// import { sendEmail } from "../utils/sendEmail";
+// import uuid from "uuid"
+
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 // import { User } from "./entities/User";
 
 const main = async () => {
-  // sendEmail("chuksjoshuaa@gmail.com", "Hello there");
   const orm = await MikroORM.init(microConfig);
 
   //delete all user from the database
