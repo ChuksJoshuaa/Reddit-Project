@@ -37,11 +37,11 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
-  // @Mutation(() => Boolean)
-  // async forgotPassword(@Arg("email") email: string, @Ctx() { em }: MyContext) {
-  //   // const user = await em.findOne(User, { email });
-  //   return true;
-  // }
+  @Mutation(() => Boolean)
+  async forgotPassword(@Arg("email") email: string, @Ctx() { em }: MyContext) {
+    const user = await em.findOne(User, { email });
+    return user;
+  }
 
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req, em }: MyContext) {
@@ -112,23 +112,31 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("usernameOrEmail") usernameOrEmail: string,
+    @Arg("email") email: string,
     @Arg("password") password: string,
     @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
-    const user = await em.findOne(
-      User,
-      usernameOrEmail.match(
+    if (
+      email.match(
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
       ) === null
-        ? { username: usernameOrEmail }
-        : { email: usernameOrEmail }
-    );
-    if (!user) {
+    ) {
       return {
         errors: [
           {
-            field: "user",
+            field: "email",
+            message: "Please provide a valid email",
+          },
+        ],
+      };
+    }
+    const user = await em.findOne(User, { email: email });
+
+    if (user === null || user === undefined || !user) {
+      return {
+        errors: [
+          {
+            field: "email",
             message: "user does not exist",
           },
         ],
