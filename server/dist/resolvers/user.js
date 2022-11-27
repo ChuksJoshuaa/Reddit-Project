@@ -35,6 +35,10 @@ let UserPasswordInput = class UserPasswordInput {
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
+], UserPasswordInput.prototype, "email", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
 ], UserPasswordInput.prototype, "username", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
@@ -83,6 +87,16 @@ let UserResolver = class UserResolver {
     }
     register(options, { em, req }) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (options.email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) === null) {
+                return {
+                    errors: [
+                        {
+                            field: "email",
+                            message: "Please provide a valid email",
+                        },
+                    ],
+                };
+            }
             if (options.username.length <= 2) {
                 return {
                     errors: [
@@ -112,6 +126,7 @@ let UserResolver = class UserResolver {
                     .insert({
                     username: options.username,
                     password: hashedPassword,
+                    email: options.email,
                     created_at: new Date(),
                     updated_at: new Date(),
                 })
@@ -136,20 +151,22 @@ let UserResolver = class UserResolver {
             };
         });
     }
-    login(options, { em, req }) {
+    login(usernameOrEmail, password, { em, req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield em.findOne(User_1.User, { username: options.username });
+            const user = yield em.findOne(User_1.User, usernameOrEmail.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) === null
+                ? { username: usernameOrEmail }
+                : { email: usernameOrEmail });
             if (!user) {
                 return {
                     errors: [
                         {
-                            field: "username",
-                            message: "username does not exist",
+                            field: "user",
+                            message: "user does not exist",
                         },
                     ],
                 };
             }
-            const valid = yield argon2_1.default.verify(user.password, options.password);
+            const valid = yield argon2_1.default.verify(user.password, password);
             if (!valid) {
                 return {
                     errors: [
@@ -195,10 +212,11 @@ __decorate([
 ], UserResolver.prototype, "register", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => UserResponse),
-    __param(0, (0, type_graphql_1.Arg)("options")),
-    __param(1, (0, type_graphql_1.Ctx)()),
+    __param(0, (0, type_graphql_1.Arg)("usernameOrEmail")),
+    __param(1, (0, type_graphql_1.Arg)("password")),
+    __param(2, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [UserPasswordInput, Object]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "login", null);
 __decorate([

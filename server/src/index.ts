@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__, COOKIE_NAME } from "./constant";
-// import { Post } from "./entities/Post";
 import "dotenv-safe/config";
 import microConfig from "./mikro-orm.config";
 import express from "express";
@@ -10,7 +9,7 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import { createClient } from "redis";
+import Redis from "ioredis";
 import connectRedis from "connect-redis";
 import session from "express-session";
 const RedisStore = connectRedis(session);
@@ -22,6 +21,7 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-co
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
+
   await orm.getMigrator().up();
 
   const PORT = process.env.PORT || 5000;
@@ -29,11 +29,10 @@ const main = async () => {
 
   const app = express();
 
-  // let’s you use the cookieParser in your application
   app.use(cookieParser());
 
-  let redisClient = createClient({ legacyMode: true });
-  redisClient.connect().catch(console.error);
+  const redis = new Redis();
+  // const redis = new Redis.Cluster([]);
 
   app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
 
@@ -42,14 +41,14 @@ const main = async () => {
       secret: secret_key || "",
       name: COOKIE_NAME,
       store: new RedisStore({
-        client: redisClient,
+        client: redis as any,
         disableTouch: true,
       }),
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: false,
-        sameSite: "lax", // csrf
-        secure: __prod__, // cookie only works in https
+        sameSite: "lax",
+        secure: __prod__,
       },
       saveUninitialized: false,
       resave: false,
@@ -66,16 +65,14 @@ const main = async () => {
       validate: false,
     }),
 
-    //plugins eliminate that fancy sandbox playground to use the default one
     plugins: [
       ApolloServerPluginLandingPageGraphQLPlayground({
-        //add this settings, so that you can access cookie in the browser
         settings: {
           "request.credentials": "include",
         },
       }),
     ],
-    context: ({ req, res }) => ({ em: orm.em, req, res }),
+    context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
   });
 
   await apolloServer.start();

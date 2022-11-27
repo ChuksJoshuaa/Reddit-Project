@@ -1,13 +1,21 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
+import { useMutation } from "urql";
 import { useMeQuery, useLogoutMutation } from "../generated/graphql";
+// import { isServer } from "../utils/isServer";
+import { LogoutDocument } from "../mutations/userMutations";
 
 interface IProps {}
 
 const Navbar: React.FC<IProps> = () => {
-  const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
-  const [{ data, fetching }] = useMeQuery();
+  const [{ fetching: logoutFetching }, logout] = useMutation(LogoutDocument);
+  // const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
+
+  const [{ data, fetching }] = useMeQuery({
+    // pause: isServer(),
+  });
+
 
   let body = null;
 
