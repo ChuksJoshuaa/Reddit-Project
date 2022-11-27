@@ -26,7 +26,6 @@ class FieldError {
   message: string;
 }
 
-//ObjectionType we use it for mutations
 @ObjectType()
 class UserResponse {
   @Field(() => [FieldError], { nullable: true })
@@ -45,11 +44,10 @@ export class UserResolver {
   ) {
     const user = await em.findOne(User, { email });
     if (user === null || user === undefined || !user) {
-      //the email is not in the database
       return true;
     }
 
-    let token = v4(); //it will generate a random string
+    let token = v4();
 
     let expireDate = 1000 * 60 * 60 * 24 * 3;
 
@@ -66,8 +64,6 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req, em }: MyContext) {
-    // you are not logged in
-
     if (!req.session.userId) {
       return null;
     }
@@ -85,10 +81,6 @@ export class UserResolver {
       return { errors };
     }
     const hashedPassword = await argon2.hash(options.password);
-    // const user = em.create(User, {
-    //   username: options.username,
-    //   password: hashedPassword,
-    // } as User);
 
     let user;
 
@@ -105,7 +97,6 @@ export class UserResolver {
         })
         .returning("*");
       user = result[0];
-      // await em.persistAndFlush(user);
     } catch (error) {
       if (error.code === "23505" || error.detail.includes("already exists")) {
         return {
@@ -119,12 +110,8 @@ export class UserResolver {
       }
     }
 
-    //store user id session
-    //this will set a cookie on the user
-    // keep them logged in
     req.session.userId = user.id;
 
-    //reason we retured user in a response object is cuz of the UserResponse we used instead of User
     return {
       user,
     };
@@ -183,11 +170,8 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   logout(@Ctx() { req, res }: MyContext) {
-    //We used New Promise because this is a callback
     return new Promise((resolve) =>
-      //clear the session from Redis
       req.session.destroy((err) => {
-        //Clears the cookie from the browser
         res.clearCookie(COOKIE_NAME);
         if (err) {
           console.log(err);

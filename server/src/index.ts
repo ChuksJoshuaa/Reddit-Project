@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__, COOKIE_NAME } from "./constant";
-// import { Post } from "./entities/Post";
 import "dotenv-safe/config";
 import microConfig from "./mikro-orm.config";
 import express from "express";

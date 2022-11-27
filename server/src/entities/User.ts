@@ -21,7 +21,6 @@ export class User {
   username!: string;
 
   @Field()
-  //you cacn add nullable:true if you want to add a new field column that was absent in the database table
   @Property({ type: "text", unique: true })
   email!: string;
 
