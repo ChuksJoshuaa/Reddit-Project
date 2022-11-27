@@ -33,6 +33,7 @@ const constant_1 = require("../constant");
 const validateRegister_1 = require("../../utils/validateRegister");
 const UserPasswordInput_1 = require("../../utils/UserPasswordInput");
 const sendEmail_1 = require("../../utils/sendEmail");
+const uuid_1 = require("uuid");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -60,16 +61,18 @@ UserResponse = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], UserResponse);
 let UserResolver = class UserResolver {
-    forgotPassword(email, { em }) {
+    forgotPassword(email, { em, redis }) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield em.findOne(User_1.User, { email });
             if (user === null || user === undefined || !user) {
                 return true;
             }
-            let token = "wsdjgskjdhhwdwd";
+            let token = (0, uuid_1.v4)();
+            let expireDate = 1000 * 60 * 60 * 24 * 3;
+            yield redis.set(`${constant_1.FORGET_PASSWORD_PREFIX}${token}`, user.id, "EX", `${expireDate}`);
             const textMessage = `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">reset password</a>`;
             yield (0, sendEmail_1.sendEmail)(email, textMessage);
-            return user;
+            return true;
         });
     }
     me({ req, em }) {
