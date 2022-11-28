@@ -4,10 +4,12 @@ declare namespace NodeJS {
     REDIS_URL: string;
     SESSION_SECRET: string;
     CORS_ORIGIN: string;
+    DATABASE_USER: string;
     DATABASE_PASSWORD: string;
     DATABASE_PORT: string;
     NODE_ENV: string;
     MONGO_URI: string;
     DATABASE_NAME: string;
+    DATABASE_URL: string;
   }
 }
