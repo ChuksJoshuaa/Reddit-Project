@@ -13,10 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const core_1 = require("@mikro-orm/core");
 const constant_1 = require("./constant");
 require("dotenv-safe/config");
-const mikro_orm_config_1 = __importDefault(require("./mikro-orm.config"));
 const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
 const type_graphql_1 = require("type-graphql");
@@ -30,10 +28,24 @@ const RedisStore = (0, connect_redis_1.default)(express_session_1.default);
 require("dotenv-safe/config");
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const typeorm_1 = require("typeorm");
 const apollo_server_core_1 = require("apollo-server-core");
+const Post_1 = require("./entities/Post");
+const User_1 = require("./entities/User");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    const orm = yield core_1.MikroORM.init(mikro_orm_config_1.default);
-    yield orm.getMigrator().up();
+    let portNumber = Number(process.env.DATABASE_PORT);
+    const AppDataSource = new typeorm_1.DataSource({
+        type: "postgres",
+        host: "localhost",
+        port: portNumber,
+        username: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_NAME_PREFIX,
+        synchronize: true,
+        logging: true,
+        entities: [Post_1.Post, User_1.User],
+    });
+    console.log(AppDataSource);
     const PORT = process.env.PORT || 5000;
     const secret_key = process.env.SESSION_SECRET;
     const app = (0, express_1.default)();
@@ -71,7 +83,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
             }),
         ],
-        context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
+        context: ({ req, res }) => ({ req, res, redis }),
     });
     yield apolloServer.start();
     apolloServer.applyMiddleware({

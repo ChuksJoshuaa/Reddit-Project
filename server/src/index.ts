@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
+
 import { __prod__, COOKIE_NAME } from "./constant";
 import "dotenv-safe/config";
-import microConfig from "./mikro-orm.config";
+
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -16,13 +16,28 @@ const RedisStore = connectRedis(session);
 import "dotenv-safe/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { DataSource } from "typeorm";
 
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import { Post } from "./entities/Post";
+import { User } from "./entities/User";
 
 const main = async () => {
-  const orm = await MikroORM.init(microConfig);
+  let portNumber = Number(process.env.DATABASE_PORT);
 
-  await orm.getMigrator().up();
+  const AppDataSource = new DataSource({
+    type: "postgres",
+    host: "localhost",
+    port: portNumber,
+    username: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME_PREFIX,
+    synchronize: true, //create a table for you without using a migration
+    logging: true,
+    entities: [Post, User],
+  });
+
+  console.log(AppDataSource);
 
   const PORT = process.env.PORT || 5000;
   const secret_key = process.env.SESSION_SECRET;
@@ -72,7 +87,7 @@ const main = async () => {
         },
       }),
     ],
-    context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
+    context: ({ req, res }) => ({ req, res, redis }),
   });
 
   await apolloServer.start();
