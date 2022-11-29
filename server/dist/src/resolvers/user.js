@@ -118,7 +118,7 @@ let UserResolver = class UserResolver {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield em.findOne(User_1.User, { email });
             if (user === null || user === undefined || !user) {
-                return true;
+                return false;
             }
             let token = (0, uuid_1.v4)();
             let expireDate = 1000 * 60 * 60 * 24 * 3;

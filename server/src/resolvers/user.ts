@@ -115,7 +115,7 @@ export class UserResolver {
   ) {
     const user = await em.findOne(User, { email });
     if (user === null || user === undefined || !user) {
-      return true;
+      return false;
     }
 
     let token = v4();

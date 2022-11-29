@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NextPage } from "next";
-import { Button, Box } from "@chakra-ui/react";
+import { Button, Box, Flex } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import { useRouter } from "next/router";
 import { Wrapper, InputField } from "../../components";
@@ -8,6 +8,7 @@ import { toErrorMap } from "../../utils/toErrorMap";
 import { useChangePasswordMutation } from "../../generated/graphql";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
+import NextLink from "next/link";
 
 interface IProps {
   token: string;
@@ -49,7 +50,23 @@ const ChangePassword: NextPage<IProps> = ({ token }) => {
               />
             </Box>
             {tokenError ? (
-              <Box style={{ color: "crimson" }}>{tokenError}</Box>
+              <Flex>
+                <Box style={{ color: "crimson" }}>{tokenError}</Box>
+                <Box mr={2} style={{ color: "crimson", fontSize: "1rem" }}>
+                  !!!
+                </Box>
+                <NextLink
+                  href="/forgot-password"
+                  style={{
+                    marginTop: "0.05em",
+                    color: "blueviolet",
+                    fontSize: "1rem",
+                    textTransform: "lowercase",
+                  }}
+                >
+                  Click here to get a new one?
+                </NextLink>
+              </Flex>
             ) : null}
             <Button
               mt={4}
