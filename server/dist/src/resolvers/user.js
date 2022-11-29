@@ -73,7 +73,8 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
-            const userId = yield redis.get(`${constant_1.FORGET_PASSWORD_PREFIX}${token}`);
+            const redisKey = `${constant_1.FORGET_PASSWORD_PREFIX}${token}`;
+            const userId = yield redis.get(redisKey);
             if (!userId) {
                 return {
                     errors: [
@@ -108,6 +109,7 @@ let UserResolver = class UserResolver {
             }
             user.password = yield argon2_1.default.hash(newPassword);
             yield em.persistAndFlush(user);
+            yield redis.del(redisKey);
             req.session.userId = user.id;
             return { user };
         });

@@ -48,7 +48,9 @@ const ChangePassword: NextPage<IProps> = ({ token }) => {
                 type="password"
               />
             </Box>
-            {tokenError ? <Box color="red">{tokenError}</Box> : null}
+            {tokenError ? (
+              <Box style={{ color: "crimson" }}>{tokenError}</Box>
+            ) : null}
             <Button
               mt={4}
               type="submit"
