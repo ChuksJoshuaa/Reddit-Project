@@ -55,7 +55,7 @@ export class UserResolver {
     }
 
     const userId = await redis.get(`${FORGET_PASSWORD_PREFIX}${token}`);
-    console.log(userId);
+
     if (!userId) {
       return {
         errors: [
@@ -81,6 +81,19 @@ export class UserResolver {
         ],
       };
     }
+
+    const valid = await argon2.verify(user.password, newPassword);
+    if (valid) {
+      return {
+        errors: [
+          {
+            field: "newPassword",
+            message: "Choose a new password",
+          },
+        ],
+      };
+    }
+
     user.password = await argon2.hash(newPassword);
 
     await em.persistAndFlush(user);

@@ -74,7 +74,6 @@ let UserResolver = class UserResolver {
                 };
             }
             const userId = yield redis.get(`${constant_1.FORGET_PASSWORD_PREFIX}${token}`);
-            console.log(userId);
             if (!userId) {
                 return {
                     errors: [
@@ -92,6 +91,17 @@ let UserResolver = class UserResolver {
                         {
                             field: "token",
                             message: "user no longer exists",
+                        },
+                    ],
+                };
+            }
+            const valid = yield argon2_1.default.verify(user.password, newPassword);
+            if (valid) {
+                return {
+                    errors: [
+                        {
+                            field: "newPassword",
+                            message: "Choose a new password",
                         },
                     ],
                 };
