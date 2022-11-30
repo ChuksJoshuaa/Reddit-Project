@@ -28,24 +28,15 @@ const RedisStore = (0, connect_redis_1.default)(express_session_1.default);
 require("dotenv-safe/config");
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const typeorm_1 = require("typeorm");
 const apollo_server_core_1 = require("apollo-server-core");
-const Post_1 = require("./entities/Post");
-const User_1 = require("./entities/User");
+const appDataSource_1 = require("./appDataSource");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    let portNumber = Number(process.env.DATABASE_PORT);
-    const AppDataSource = new typeorm_1.DataSource({
-        type: "postgres",
-        host: "localhost",
-        port: portNumber,
-        username: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_NAME_PREFIX,
-        synchronize: true,
-        logging: true,
-        entities: [Post_1.Post, User_1.User],
-    });
-    console.log(AppDataSource);
+    appDataSource_1.dataSource
+        .initialize()
+        .then((response) => {
+        console.log(typeof response);
+    })
+        .catch((error) => console.log(error));
     const PORT = process.env.PORT || 5000;
     const secret_key = process.env.SESSION_SECRET;
     const app = (0, express_1.default)();

@@ -15,8 +15,8 @@ const typeorm_1 = require("typeorm");
 let Post = class Post extends typeorm_1.BaseEntity {
     constructor() {
         super(...arguments);
-        this.createdAt = Date;
-        this.updatedAt = Date;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 };
 __decorate([
