@@ -8,7 +8,6 @@ import { Box } from "@chakra-ui/react";
 const Index = () => {
   const [{ data }] = usePostsQuery();
 
-  console.log(data);
   return (
     <>
       <Navbar />
@@ -18,9 +17,16 @@ const Index = () => {
         <div>Loading...</div>
       ) : (
         data.posts.map((item) => (
-          <Box key={item.id} ml={2} mb={1}>
-            <Box>{item.title}</Box>
-            <Box>{item.description}</Box>
+          <Box
+            key={item.id}
+            ml={2}
+            mb={1}
+            style={{ border: "1px solid silver" }}
+          >
+            <Box p={2} pb={0} color="red">
+              {item.title}
+            </Box>
+            <Box p={2}>{item.description}</Box>
           </Box>
         ))
       )}
