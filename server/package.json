@@ -37,6 +37,7 @@
     "@mikro-orm/migrations-mongodb": "^5.5.3",
     "@mikro-orm/mongodb": "^5.5.3",
     "@mikro-orm/postgresql": "^5.5.3",
+    "apollo-server": "^3.11.1",
     "apollo-server-express": "^3.11.1",
     "argon2": "^0.30.2",
     "connect-redis": "^6.1.3",

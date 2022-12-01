@@ -19,8 +19,8 @@ const Index = () => {
         data.posts.map((item) => (
           <Box
             key={item.id}
-            ml={2}
-            mb={1}
+            mx={2}
+            mb={2}
             style={{ border: "1px solid silver" }}
           >
             <Box p={2} pb={0} color="red">
