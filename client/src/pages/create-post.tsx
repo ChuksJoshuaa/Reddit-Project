@@ -1,7 +1,7 @@
 import { Button, Box } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import React from "react";
-import { InputField, Wrapper } from "../components";
+import { InputField, Wrapper, TextField } from "../components";
 interface IProps {}
 
 const CreatePost: React.FC<IProps> = ({}) => {
@@ -20,11 +20,10 @@ const CreatePost: React.FC<IProps> = ({}) => {
               type="text"
             />
             <Box mt={4}>
-              <label>Description</label>
-              <textarea
+              <TextField
                 name="description"
-                placeholder="Enter description..."
-                value="description"
+                placeholder="description..."
+                label="Description"
               />
             </Box>
             <Button
