@@ -9,7 +9,9 @@ const CreatePost: React.FC<IProps> = ({}) => {
     <Wrapper variant="small">
       <Formik
         initialValues={{ title: "", description: "" }}
-        onSubmit={async (values, { setErrors }) => {}}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
       >
         {({ isSubmitting }) => (
           <Form>
