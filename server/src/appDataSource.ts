@@ -5,12 +5,10 @@ import { User } from "./entities/User";
 
 let portNumber = Number(process.env.DATABASE_PORT);
 
-console.log(typeof portNumber);
-
 export const dataSource = new DataSource({
   type: "postgres",
-  // host: "localhost",
-  // port: portNumber,
+  host: "localhost",
+  port: portNumber,
   username: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME_PREFIX,

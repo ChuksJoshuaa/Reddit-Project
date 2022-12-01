@@ -6,9 +6,10 @@ require("dotenv-safe/config");
 const Post_1 = require("./entities/Post");
 const User_1 = require("./entities/User");
 let portNumber = Number(process.env.DATABASE_PORT);
-console.log(typeof portNumber);
 exports.dataSource = new typeorm_1.DataSource({
     type: "postgres",
+    host: "localhost",
+    port: portNumber,
     username: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME_PREFIX,

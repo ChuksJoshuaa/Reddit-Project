@@ -16,11 +16,12 @@ const RedisStore = connectRedis(session);
 import "dotenv-safe/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
+// import { Post } from "./entities/Post";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { dataSource } from "./appDataSource";
 
 const main = async () => {
+  // await Post.delete({});
   dataSource
     .initialize()
     .then((response) => {
