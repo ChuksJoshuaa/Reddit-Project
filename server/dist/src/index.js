@@ -13,10 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const core_1 = require("@mikro-orm/core");
 const constant_1 = require("./constant");
 require("dotenv-safe/config");
-const mikro_orm_config_1 = __importDefault(require("./mikro-orm.config"));
 const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
 const type_graphql_1 = require("type-graphql");
@@ -31,9 +29,14 @@ require("dotenv-safe/config");
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const apollo_server_core_1 = require("apollo-server-core");
+const appDataSource_1 = require("./appDataSource");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    const orm = yield core_1.MikroORM.init(mikro_orm_config_1.default);
-    yield orm.getMigrator().up();
+    appDataSource_1.dataSource
+        .initialize()
+        .then((response) => {
+        console.log(typeof response);
+    })
+        .catch((error) => console.log(error));
     const PORT = process.env.PORT || 5000;
     const secret_key = process.env.SESSION_SECRET;
     const app = (0, express_1.default)();
@@ -71,7 +74,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
             }),
         ],
-        context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
+        context: ({ req, res }) => ({ req, res, redis }),
     });
     yield apolloServer.start();
     apolloServer.applyMiddleware({

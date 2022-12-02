@@ -1,0 +1,1 @@
+{"version":3,"file":"Authenticated.js","sourceRoot":"","sources":["../../../src/middleware/Authenticated.ts"],"names":[],"mappings":";;;AAEA,iDAAoD;AAE7C,MAAM,aAAa,GAA4B,CAAC,EAAE,OAAO,EAAE,EAAE,IAAI,EAAE,EAAE;IAC1E,IAAI,CAAC,OAAO,CAAC,GAAG,CAAC,OAAO,CAAC,MAAM,EAAE;QAE/B,MAAM,IAAI,mCAAmB,CAAC,uBAAuB,CAAC,CAAC;KACxD;IAED,OAAO,IAAI,EAAE,CAAC;AAChB,CAAC,CAAC;AAPW,QAAA,aAAa,iBAOxB"}

@@ -16,7 +16,6 @@ const Navbar: React.FC<IProps> = () => {
     // pause: isServer(),
   });
 
-
   let body = null;
 
   //data is loading
@@ -54,7 +53,13 @@ const Navbar: React.FC<IProps> = () => {
     );
   }
   return (
-    <Flex bg="tan" p={4} fontWeight="bold">
+    <Flex bg="tan" p={4} fontWeight="bold" justify="space-between">
+      <Link href="/" style={{ marginRight: "1em" }}>
+        Home
+      </Link>
+      <Link href="/create-post" style={{ marginRight: "1em" }}>
+        CreatePost
+      </Link>
       <Box ml={"auto"}>{body}</Box>
     </Flex>
   );

@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
+
 import { __prod__, COOKIE_NAME } from "./constant";
 import "dotenv-safe/config";
-import microConfig from "./mikro-orm.config";
+
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -16,13 +16,19 @@ const RedisStore = connectRedis(session);
 import "dotenv-safe/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
+// import { Post } from "./entities/Post";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import { dataSource } from "./appDataSource";
 
 const main = async () => {
-  const orm = await MikroORM.init(microConfig);
-
-  await orm.getMigrator().up();
+  // await Post.delete({});
+  dataSource
+    .initialize()
+    .then((response) => {
+      console.log(typeof response);
+      // here you can start to work with your database
+    })
+    .catch((error) => console.log(error));
 
   const PORT = process.env.PORT || 5000;
   const secret_key = process.env.SESSION_SECRET;
@@ -72,7 +78,7 @@ const main = async () => {
         },
       }),
     ],
-    context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
+    context: ({ req, res }) => ({ req, res, redis }),
   });
 
   await apolloServer.start();
