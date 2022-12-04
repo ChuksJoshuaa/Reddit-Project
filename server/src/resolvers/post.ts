@@ -29,13 +29,15 @@ export class PostResolver {
     @Arg("cursor", () => String, { nullable: true }) cursor: string | null
   ): Promise<Post[]> {
     const realLimit = Math.min(50, limit);
-    return await dataSource
+    const qb = dataSource
       .getRepository(Post)
       .createQueryBuilder("p")
-      .where('"createdAt > :cursor"', { cursor })
       .orderBy('"createdAt"', "DESC")
-      .take(realLimit)
-      .getMany();
+      .take(realLimit);
+    if (cursor) {
+      qb.where('"createdAt < :cursor"', { cursor: new Date(parseInt(cursor)) });
+    }
+    return qb.getMany();
   }
 
   //Get post by id
