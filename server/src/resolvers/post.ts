@@ -11,6 +11,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Post } from "../entities/Post";
+import { dataSource } from "../appDataSource";
 
 @InputType()
 class PostInput {
@@ -23,8 +24,18 @@ class PostInput {
 @Resolver()
 export class PostResolver {
   @Query(() => [Post])
-  async posts(): Promise<Post[]> {
-    return Post.find();
+  async posts(
+    @Arg("limit") limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+  ): Promise<Post[]> {
+    const realLimit = Math.min(50, limit);
+    return await dataSource
+      .getRepository(Post)
+      .createQueryBuilder("p")
+      .where('"createdAt > :cursor"', { cursor })
+      .orderBy('"createdAt"', "DESC")
+      .take(realLimit)
+      .getMany();
   }
 
   //Get post by id

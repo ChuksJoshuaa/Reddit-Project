@@ -14,10 +14,13 @@ interface IProps {
   token: string;
 }
 
-const ChangePassword: NextPage<IProps> = ({ token }) => {
+const ChangePassword: NextPage<IProps> = () => {
   const [, changePassword] = useChangePasswordMutation();
-  const Router = useRouter();
+  const router = useRouter();
   const [tokenError, setTokenError] = useState("");
+
+  //We can use router.query to get the token instead of the getInitialProps where we pass the token props as a parameter
+  const tokenQuery = router.query.token;
 
   return (
     <Wrapper variant="small">
@@ -26,7 +29,7 @@ const ChangePassword: NextPage<IProps> = ({ token }) => {
         onSubmit={async (values, { setErrors }) => {
           const response = await changePassword({
             newPassword: values.newPassword,
-            token,
+            token: typeof tokenQuery === "string" ? tokenQuery : "",
           });
           if (response.data?.changePassword.errors) {
             const errorMap = toErrorMap(response.data?.changePassword.errors);
@@ -35,7 +38,7 @@ const ChangePassword: NextPage<IProps> = ({ token }) => {
             }
             setErrors(errorMap);
           } else if (response.data?.changePassword.user) {
-            Router.push("/");
+            router.push("/");
           }
         }}
       >
@@ -83,10 +86,10 @@ const ChangePassword: NextPage<IProps> = ({ token }) => {
   );
 };
 
-ChangePassword.getInitialProps = ({ query }) => {
-  return {
-    token: query.token as string,
-  };
-};
+// ChangePassword.getInitialProps = ({ query }) => {
+//   return {
+//     token: query.token as string,
+//   };
+// };
 
 export default withUrqlClient(createUrqlClient)(ChangePassword);

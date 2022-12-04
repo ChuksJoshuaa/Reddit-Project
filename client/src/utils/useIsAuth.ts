@@ -7,7 +7,8 @@ export const useIsAuth = () => {
 
   useEffect(() => {
     if (!fetching && !data?.me) {
-      router.replace("/login");
+      //it means redirect to pathname after user have logged in
+      router.replace("/login?next=" + router.pathname);
     }
   }, [data, router, fetching]);
 };
