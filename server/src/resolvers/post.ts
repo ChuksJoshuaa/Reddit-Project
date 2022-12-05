@@ -10,6 +10,8 @@ import {
   Ctx,
   UseMiddleware,
   Int,
+  FieldResolver,
+  Root,
 } from "type-graphql";
 import { Post } from "../entities/Post";
 import { dataSource } from "../appDataSource";
@@ -22,8 +24,14 @@ class PostInput {
   description: string;
 }
 
-@Resolver()
+@Resolver(Post)
 export class PostResolver {
+  @FieldResolver(() => String)
+  descriptionSnippet(@Root() root: Post) {
+    //To slice the post description
+    return root.description.slice(0, 100);
+  }
+
   @Query(() => [Post])
   async posts(
     @Arg("limit", () => Int) limit: number,
