@@ -3,7 +3,7 @@ import { Navbar } from "../components";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { usePostsQuery } from "../generated/graphql";
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
 
 const Index = () => {
@@ -21,22 +21,17 @@ const Index = () => {
       {!data ? (
         <div>Loading...</div>
       ) : (
-        data.posts.map((item) => (
-          <Box
-            key={item.id}
-            mx={2}
-            mb={2}
-            style={{ border: "1px solid silver" }}
-          >
-            <Box p={2} pb={0} color="red">
-              {item.title}
+        <Stack spacing={8}>
+          {data.posts.map((item) => (
+            <Box p={5} shadow="md" borderWidth="1px">
+              <Heading fontSize="xl">{item.title}</Heading>
+              <Text mt={4}>{item.description.slice(0, 100)}</Text>
+              <Button mt={2} colorScheme="red">
+                <Link href={`/single-page/${item.id}`}>Read More</Link>
+              </Button>
             </Box>
-            <Box p={2}>{item.description}</Box>
-            <Button m={2} colorScheme="cyan">
-              <Link href={`/single-page/${item.id}`}>Read More</Link>
-            </Button>
-          </Box>
-        ))
+          ))}
+        </Stack>
       )}
     </>
   );
