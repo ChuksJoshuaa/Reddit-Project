@@ -31,6 +31,15 @@ export const cursorPagination = (): Resolver => {
       return undefined;
     }
 
+    let results: string[] = [];
+    fieldInfos.forEach((fi) => {
+      const data = cache.resolve(entityKey, fi.fieldKey) as string[];
+
+      results.push(...data);
+    });
+
+    return results;
+
     // const visited = new Set();
     // let result: NullArray<string> = [];
     // let prevOffset: number | null = null;

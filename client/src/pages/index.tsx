@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Navbar } from "../components";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
@@ -7,10 +7,9 @@ import { Box, Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
 
 const Index = () => {
-  const [limitValue, setLimitValue] = useState(10);
   const [{ data, fetching }] = usePostsQuery({
     variables: {
-      limit: limitValue,
+      limit: 10,
     },
   });
 
@@ -24,14 +23,6 @@ const Index = () => {
     );
   }
 
-  const loadMore = () => {
-    let limitCheck = 10;
-    if (limitValue > limitCheck || limitValue === limitCheck) {
-      limitCheck = limitValue + limitCheck;
-      setLimitValue(limitCheck);
-    }
-  };
-
   return (
     <>
       <Navbar />
@@ -42,7 +33,7 @@ const Index = () => {
       ) : (
         <Stack spacing={8}>
           {data!.posts.map((item) => (
-            <Box p={5} shadow="md" borderWidth="1px">
+            <Box p={5} shadow="md" borderWidth="1px" key={item.id}>
               <Heading fontSize="xl">{item.title}</Heading>
               <Text mt={4}>{item.descriptionSnippet}...</Text>
               <Button mt={2} colorScheme="red">
@@ -54,7 +45,7 @@ const Index = () => {
       )}
       {data ? (
         <Flex>
-          <Button isLoading={fetching} m="auto" my={8} onClick={loadMore}>
+          <Button isLoading={fetching} m="auto" my={8}>
             Load More
           </Button>
         </Flex>
