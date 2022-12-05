@@ -31,7 +31,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const apollo_server_core_1 = require("apollo-server-core");
 const appDataSource_1 = require("./appDataSource");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    appDataSource_1.dataSource
+    yield appDataSource_1.dataSource
         .initialize()
         .then((response) => {
         console.log(typeof response);

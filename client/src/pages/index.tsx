@@ -3,10 +3,15 @@ import { Navbar } from "../components";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { usePostsQuery } from "../generated/graphql";
-import { Box } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
+import Link from "next/link";
 
 const Index = () => {
-  const [{ data }] = usePostsQuery();
+  const [{ data }] = usePostsQuery({
+    variables: {
+      limit: 10,
+    },
+  });
 
   return (
     <>
@@ -27,6 +32,9 @@ const Index = () => {
               {item.title}
             </Box>
             <Box p={2}>{item.description}</Box>
+            <Button m={2} colorScheme="cyan">
+              <Link href={`/single-page/${item.id}`}>Read More</Link>
+            </Button>
           </Box>
         ))
       )}

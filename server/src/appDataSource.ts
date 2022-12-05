@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import "dotenv-safe/config";
 import { Post } from "./entities/Post";
 import { User } from "./entities/User";
+import path from "path";
 
 let portNumber = Number(process.env.DATABASE_PORT);
 
@@ -14,5 +15,6 @@ export const dataSource = new DataSource({
   database: process.env.DATABASE_NAME_PREFIX,
   synchronize: true, //create a table for you without using a migration
   logging: true,
+  migrations: [path.join(__dirname, "./migrations/*")],
   entities: [Post, User],
 });
