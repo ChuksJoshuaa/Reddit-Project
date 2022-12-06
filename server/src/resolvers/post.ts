@@ -9,8 +9,12 @@ import {
   Field,
   Ctx,
   UseMiddleware,
+  Int,
+  FieldResolver,
+  Root,
 } from "type-graphql";
 import { Post } from "../entities/Post";
+import { dataSource } from "../appDataSource";
 
 @InputType()
 class PostInput {
@@ -20,16 +24,34 @@ class PostInput {
   description: string;
 }
 
-@Resolver()
+@Resolver(Post)
 export class PostResolver {
+  @FieldResolver(() => String)
+  descriptionSnippet(@Root() root: Post) {
+    //To slice the post description
+    return root.description.slice(0, 100);
+  }
+
   @Query(() => [Post])
-  async posts(): Promise<Post[]> {
-    return Post.find();
+  async posts(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+  ): Promise<Post[]> {
+    const realLimit = Math.min(50, limit);
+    const qb = dataSource
+      .getRepository(Post)
+      .createQueryBuilder("p")
+      .orderBy('"createdAt"', "DESC")
+      .take(realLimit);
+    if (cursor) {
+      qb.where('"createdAt < :cursor"', { cursor: new Date(parseInt(cursor)) });
+    }
+    return qb.getMany();
   }
 
   //Get post by id
   @Query(() => Post, { nullable: true })
-  post(@Arg("id") id: number): Promise<Post | null> {
+  post(@Arg("id", () => Int) id: number): Promise<Post | null> {
     return Post.findOne({ where: { id } });
   }
 

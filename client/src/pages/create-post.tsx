@@ -1,17 +1,22 @@
-import { Button, Box } from "@chakra-ui/react";
-import { Formik, Form } from "formik";
-import React from "react";
-import { InputField, TextField, Layout } from "../components";
-import { useCreatePostMutation } from "../generated/graphql";
-import { useRouter } from "next/router";
+import { Box, Button } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
+import { useRouter } from "next/router";
+import React from "react";
+import { InputField, Layout, TextField } from "../components";
+import { useCreatePostMutation } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
+import { useIsAuth } from "../utils/useIsAuth";
 
 interface IProps {}
 
 const CreatePost: React.FC<IProps> = ({}) => {
   const [, createPost] = useCreatePostMutation();
-  const Router = useRouter();
+  const router = useRouter();
+
+  //check if the user is logged in
+  useIsAuth();
+
   return (
     <Layout variant="small">
       <Formik
@@ -26,11 +31,11 @@ const CreatePost: React.FC<IProps> = ({}) => {
                 err.extensions.code === "UNAUTHENTICATED" ||
                 err.message.includes("logged in")
               ) {
-                Router.push("/login");
+                router.push("/login");
               }
             }
           } else {
-            Router.push("/");
+            router.push("/");
           }
         }}
       >

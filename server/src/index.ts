@@ -22,13 +22,16 @@ import { dataSource } from "./appDataSource";
 
 const main = async () => {
   // await Post.delete({});
-  dataSource
+
+  await dataSource
     .initialize()
     .then((response) => {
       console.log(typeof response);
       // here you can start to work with your database
     })
     .catch((error) => console.log(error));
+
+  // dataSource.runMigrations();
 
   const PORT = process.env.PORT || 5000;
   const secret_key = process.env.SESSION_SECRET;
