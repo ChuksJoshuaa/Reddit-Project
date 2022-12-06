@@ -37,7 +37,6 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(typeof response);
     })
         .catch((error) => console.log(error));
-    appDataSource_1.dataSource.runMigrations();
     const PORT = process.env.PORT || 5000;
     const secret_key = process.env.SESSION_SECRET;
     const app = (0, express_1.default)();

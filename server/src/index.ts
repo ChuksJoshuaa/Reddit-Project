@@ -29,7 +29,7 @@ const main = async () => {
     })
     .catch((error) => console.log(error));
 
-  dataSource.runMigrations();
+  // dataSource.runMigrations();
 
   //Delete all post record from database table
   // await Post.delete({});
