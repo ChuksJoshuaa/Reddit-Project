@@ -52,7 +52,9 @@ let PostResolver = class PostResolver {
                 .orderBy('"createdAt"', "DESC")
                 .take(realLimit);
             if (cursor) {
-                qb.where('"createdAt < :cursor"', { cursor: new Date(parseInt(cursor)) });
+                qb.where('"createdAt" < :cursor', {
+                    cursor: new Date(parseInt(cursor)),
+                });
             }
             return qb.getMany();
         });

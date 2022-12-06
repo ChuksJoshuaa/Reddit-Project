@@ -31,6 +31,13 @@ export const cursorPagination = (): Resolver => {
       return undefined;
     }
 
+    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
+
+    const isItInTheCache = cache.resolve(entityKey, fieldKey);
+
+    //we use ! to show that the value is neglected
+    info.partial = !isItInTheCache;
+
     let results: string[] = [];
     fieldInfos.forEach((fi) => {
       const data = cache.resolve(entityKey, fi.fieldKey) as string[];
