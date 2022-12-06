@@ -15,8 +15,6 @@ const Index = () => {
     variables,
   });
 
-  console.log(variables);
-
   if (!fetching && !data) {
     return (
       <Flex>

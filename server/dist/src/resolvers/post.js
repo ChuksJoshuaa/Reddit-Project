@@ -60,17 +60,26 @@ let PostResolver = class PostResolver {
         return __awaiter(this, void 0, void 0, function* () {
             const realLimit = Math.min(50, limit);
             const realLimitPlusOne = realLimit + 1;
-            const qb = appDataSource_1.dataSource
-                .getRepository(Post_1.Post)
-                .createQueryBuilder("p")
-                .orderBy('"createdAt"', "DESC")
-                .take(realLimitPlusOne);
+            const replacements = [realLimitPlusOne];
             if (cursor) {
-                qb.where('"createdAt" < :cursor', {
-                    cursor: new Date(parseInt(cursor)),
-                });
+                replacements.push(new Date(parseInt(cursor)));
             }
-            const posts = yield qb.getMany();
+            const posts = yield appDataSource_1.dataSource.query(`
+        select p.*, 
+        json_build_object(
+          'id', u.id,
+          'username', u.username,
+          'email', u.email,
+          'createdAt', u."createdAt",
+          'updatedAt', u."updatedAt"
+          ) author
+        from post p
+        inner join public.user u on u.id = p."authorId"
+        ${cursor ? `where p."createdAt" < $2` : ""}
+        order by p."createdAt" DESC
+        limit $1    
+    `, replacements);
+            console.log(posts);
             return {
                 posts: posts.slice(0, realLimit),
                 hasMore: posts.length === realLimitPlusOne,

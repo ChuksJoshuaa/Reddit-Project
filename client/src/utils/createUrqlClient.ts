@@ -20,6 +20,7 @@ export interface PaginationParams {
   // mergeMode?: MergeMode;
 }
 
+//Implementing Pagination
 export const cursorPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info;
@@ -56,7 +57,6 @@ export const cursorPagination = (): Resolver => {
       hasMore,
       posts: results,
     };
-    // console.log(objReturned);
 
     return objReturned;
 
