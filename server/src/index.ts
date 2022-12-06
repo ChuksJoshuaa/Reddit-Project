@@ -16,13 +16,11 @@ const RedisStore = connectRedis(session);
 import "dotenv-safe/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-// import { Post } from "./entities/Post";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { dataSource } from "./appDataSource";
+// import { Post } from "./entities/Post";
 
 const main = async () => {
-  // await Post.delete({});
-
   await dataSource
     .initialize()
     .then((response) => {
@@ -31,7 +29,10 @@ const main = async () => {
     })
     .catch((error) => console.log(error));
 
-  // dataSource.runMigrations();
+  dataSource.runMigrations();
+
+  //Delete all post record from database table
+  // await Post.delete({});
 
   const PORT = process.env.PORT || 5000;
   const secret_key = process.env.SESSION_SECRET;
