@@ -41,6 +41,7 @@ class UserResponse {
 @Resolver(User)
 export class UserResolver {
   @FieldResolver(() => String)
+  //allow you to see your email of the posts you made while posts made by other authors, you won't see their email for security purpose
   email(@Root() user: User, @Ctx() { req }: MyContext) {
     //this is the current user and its okay to show them their own email
     if (req.session.userId === user.id) {
