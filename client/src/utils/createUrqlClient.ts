@@ -24,8 +24,10 @@ export const cursorPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info;
 
-    const allFields = cache.inspectFields(entityKey);
+    const allFields = cache.inspectFields(entityKey); //gets you an array containing the fieldKey which is "posts({\"limit\":10})"", arguments which is {limit:10} and FieldName which is posts
+
     const fieldInfos = allFields.filter((info) => info.fieldName === fieldName);
+
     const size = fieldInfos.length;
     if (size === 0) {
       return undefined;
@@ -37,15 +39,26 @@ export const cursorPagination = (): Resolver => {
 
     //we use ! to show that the value is neglected
     info.partial = !isItInTheCache;
-
+    let hasMore = true;
     let results: string[] = [];
     fieldInfos.forEach((fi) => {
-      const data = cache.resolve(entityKey, fi.fieldKey) as string[];
-
+      const key = cache.resolve(entityKey, fi.fieldKey) as string;
+      const data = cache.resolve(key, "posts") as string[]; //to get posts values
+      const _hasMore = cache.resolve(key, "hasMore"); //to get hasMore value
+      if (!_hasMore) {
+        hasMore = _hasMore as boolean;
+      }
       results.push(...data);
     });
 
-    return results;
+    const objReturned = {
+      __typename: "PaginatedPosts",
+      hasMore,
+      posts: results,
+    };
+    // console.log(objReturned);
+
+    return objReturned;
 
     // const visited = new Set();
     // let result: NullArray<string> = [];
@@ -109,6 +122,9 @@ export const createUrqlClient = (ssrExchange: any) => ({
   exchanges: [
     dedupExchange,
     cacheExchange({
+      keys: {
+        PaginatedPosts: () => null,
+      },
       resolvers: {
         Query: {
           posts: cursorPagination(),

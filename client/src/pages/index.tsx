@@ -30,7 +30,7 @@ const Index = () => {
   const loadMore = (data: any) => {
     setVariables({
       limit: variables.limit,
-      cursor: data.posts[data.posts.length - 1].createdAt,
+      cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
     });
   };
 
@@ -43,7 +43,7 @@ const Index = () => {
         <div>Loading...</div>
       ) : (
         <Stack spacing={8}>
-          {data!.posts.map((item) => (
+          {data!.posts.posts.map((item) => (
             <Box p={5} shadow="md" borderWidth="1px" key={item.id}>
               <Heading fontSize="xl">{item.title}</Heading>
               <Text mt={4}>{item.descriptionSnippet}...</Text>
@@ -54,7 +54,7 @@ const Index = () => {
           ))}
         </Stack>
       )}
-      {data ? (
+      {data && data.posts.hasMore ? (
         <Flex>
           <Button
             isLoading={fetching}
