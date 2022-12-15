@@ -16,6 +16,7 @@ import {
 } from "type-graphql";
 import { Post } from "../entities/Post";
 import { dataSource } from "../appDataSource";
+import { Updoot } from "../entities/Updoot";
 
 @InputType()
 class PostInput {
@@ -39,6 +40,34 @@ export class PostResolver {
   descriptionSnippet(@Root() root: Post) {
     //To slice the post description
     return root.description.slice(0, 100);
+  }
+
+  @Mutation(() => Boolean)
+  async vote(
+    @Arg("postId", () => Int) postId: number,
+    @Arg("value", () => Int) value: number,
+    @Ctx() { req }: MyContext
+  ) {
+    const isUpdoot = value !== -1;
+    const realValue = isUpdoot ? 1 : -1;
+    const { userId } = req.session;
+    await Updoot.insert({
+      userId,
+      postId,
+      value: realValue,
+    });
+
+    await dataSource.query(
+      `
+    update post p
+    set p.points = p.points + $1
+    where p.id = $2
+    `,
+      [realValue, postId]
+    );
+
+    // await Post.update({ id: postId }, {});
+    return true;
   }
 
   @Query(() => PaginatedPosts)

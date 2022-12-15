@@ -26,6 +26,7 @@ const Authenticated_1 = require("../middleware/Authenticated");
 const type_graphql_1 = require("type-graphql");
 const Post_1 = require("../entities/Post");
 const appDataSource_1 = require("../appDataSource");
+const Updoot_1 = require("../entities/Updoot");
 let PostInput = class PostInput {
 };
 __decorate([
@@ -55,6 +56,24 @@ PaginatedPosts = __decorate([
 let PostResolver = class PostResolver {
     descriptionSnippet(root) {
         return root.description.slice(0, 100);
+    }
+    vote(postId, value, { req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const isUpdoot = value !== -1;
+            const realValue = isUpdoot ? 1 : -1;
+            const { userId } = req.session;
+            yield Updoot_1.Updoot.insert({
+                userId,
+                postId,
+                value: realValue,
+            });
+            yield appDataSource_1.dataSource.query(`
+    update post p
+    set p.points = p.points + $1
+    where p.id = $2
+    `, [realValue, postId]);
+            return true;
+        });
     }
     posts(limit, cursor) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -121,6 +140,15 @@ __decorate([
     __metadata("design:paramtypes", [Post_1.Post]),
     __metadata("design:returntype", void 0)
 ], PostResolver.prototype, "descriptionSnippet", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    __param(0, (0, type_graphql_1.Arg)("postId", () => type_graphql_1.Int)),
+    __param(1, (0, type_graphql_1.Arg)("value", () => type_graphql_1.Int)),
+    __param(2, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number, Object]),
+    __metadata("design:returntype", Promise)
+], PostResolver.prototype, "vote", null);
 __decorate([
     (0, type_graphql_1.Query)(() => PaginatedPosts),
     __param(0, (0, type_graphql_1.Arg)("limit", () => type_graphql_1.Int)),
