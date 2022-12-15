@@ -16,7 +16,7 @@ import {
 } from "type-graphql";
 import { Post } from "../entities/Post";
 import { dataSource } from "../appDataSource";
-import { Updoot } from "../entities/Updoot";
+// import { Updoot } from "../entities/Updoot";
 
 @InputType()
 class PostInput {
@@ -38,7 +38,6 @@ class PaginatedPosts {
 export class PostResolver {
   @FieldResolver(() => String)
   descriptionSnippet(@Root() root: Post) {
-    //To slice the post description
     return root.description.slice(0, 100);
   }
 
@@ -51,22 +50,27 @@ export class PostResolver {
     const isUpdoot = value !== -1;
     const realValue = isUpdoot ? 1 : -1;
     const { userId } = req.session;
-    await Updoot.insert({
-      userId,
-      postId,
-      value: realValue,
-    });
+    // await Updoot.insert({
+    //   userId,
+    //   postId,
+    //   value: realValue,
+    // });
 
     await dataSource.query(
       `
-    update post p
-    set p.points = p.points + $1
-    where p.id = $2
-    `,
-      [realValue, postId]
+    START TRANSACTION;
+
+    insert into updoot ("userId", "postId", value)
+    values (${userId}, ${postId}, ${realValue});
+
+    update post     
+    set points = points + ${realValue}
+    where id = ${postId};
+
+    COMMIT;
+    `
     );
 
-    // await Post.update({ id: postId }, {});
     return true;
   }
 
@@ -142,7 +146,6 @@ export class PostResolver {
   }
 
   //Update Post
-  //always set the data types when using nullable
   @Mutation(() => Post, { nullable: true })
   async updatePost(
     @Arg("id") id: number,
@@ -160,7 +163,6 @@ export class PostResolver {
   }
 
   //Delete Post
-  //It will return a boolean after specific post has been deleted
   @Mutation(() => Boolean)
   async deletePost(@Arg("id") id: number): Promise<boolean> {
     await Post.delete(id);
