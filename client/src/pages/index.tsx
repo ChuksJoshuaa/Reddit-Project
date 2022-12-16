@@ -1,35 +1,69 @@
-import React from "react";
+import React, { useState } from "react";
 import { Navbar } from "../components";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { usePostsQuery } from "../generated/graphql";
-import { Box } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import Link from "next/link";
 
 const Index = () => {
-  const [{ data }] = usePostsQuery();
+  const [variables, setVariables] = useState({
+    limit: 10,
+    cursor: null as null | string,
+  });
+  const [{ data, fetching }] = usePostsQuery({
+    variables,
+  });
+
+  if (!fetching && !data) {
+    return (
+      <Flex>
+        <Box m="auto" my={8}>
+          You do not have any posts for some reason
+        </Box>
+      </Flex>
+    );
+  }
+
+  const loadMore = (data: any) => {
+    setVariables({
+      limit: variables.limit,
+      cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
+    });
+  };
 
   return (
     <>
       <Navbar />
       <h1>Home</h1>
       <br />
-      {!data ? (
+      {!data && fetching ? (
         <div>Loading...</div>
       ) : (
-        data.posts.map((item) => (
-          <Box
-            key={item.id}
-            mx={2}
-            mb={2}
-            style={{ border: "1px solid silver" }}
-          >
-            <Box p={2} pb={0} color="red">
-              {item.title}
+        <Stack spacing={8}>
+          {data!.posts.posts.map((item) => (
+            <Box p={5} shadow="md" borderWidth="1px" key={item.id}>
+              <Heading fontSize="xl">{item.title}</Heading>
+              <Text mt={4}>{item.descriptionSnippet}...</Text>
+              <Button mt={2} colorScheme="red">
+                <Link href={`/single-page/${item.id}`}>Read More</Link>
+              </Button>
             </Box>
-            <Box p={2}>{item.description}</Box>
-          </Box>
-        ))
+          ))}
+        </Stack>
       )}
+      {data && data.posts.hasMore ? (
+        <Flex>
+          <Button
+            isLoading={fetching}
+            m="auto"
+            my={8}
+            onClick={() => loadMore(data)}
+          >
+            Load More
+          </Button>
+        </Flex>
+      ) : null}
     </>
   );
 };

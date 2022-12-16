@@ -9,9 +9,14 @@ import {
   Field,
   Ctx,
   UseMiddleware,
+  Int,
+  FieldResolver,
+  Root,
+  ObjectType,
 } from "type-graphql";
 import { Post } from "../entities/Post";
 import { dataSource } from "../appDataSource";
+// import { Updoot } from "../entities/Updoot";
 
 @InputType()
 class PostInput {
@@ -21,26 +26,111 @@ class PostInput {
   description: string;
 }
 
-@Resolver()
+@ObjectType()
+class PaginatedPosts {
+  @Field(() => [Post])
+  posts: Post[];
+  @Field()
+  hasMore: boolean;
+}
+
+@Resolver(Post)
 export class PostResolver {
-  @Query(() => [Post])
+  @FieldResolver(() => String)
+  descriptionSnippet(@Root() root: Post) {
+    return root.description.slice(0, 100);
+  }
+
+  @Mutation(() => Boolean)
+  async vote(
+    @Arg("postId", () => Int) postId: number,
+    @Arg("value", () => Int) value: number,
+    @Ctx() { req }: MyContext
+  ) {
+    const isUpdoot = value !== -1;
+    const realValue = isUpdoot ? 1 : -1;
+    const { userId } = req.session;
+    // await Updoot.insert({
+    //   userId,
+    //   postId,
+    //   value: realValue,
+    // });
+
+    await dataSource.query(
+      `
+    START TRANSACTION;
+
+    insert into updoot ("userId", "postId", value)
+    values (${userId}, ${postId}, ${realValue});
+
+    update post     
+    set points = points + ${realValue}
+    where id = ${postId};
+
+    COMMIT;
+    `
+    );
+
+    return true;
+  }
+
+  @Query(() => PaginatedPosts)
   async posts(
-    @Arg("limit") limit: number,
+    @Arg("limit", () => Int) limit: number,
     @Arg("cursor", () => String, { nullable: true }) cursor: string | null
-  ): Promise<Post[]> {
+  ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
-    return await dataSource
-      .getRepository(Post)
-      .createQueryBuilder("p")
-      .where('"createdAt > :cursor"', { cursor })
-      .orderBy('"createdAt"', "DESC")
-      .take(realLimit)
-      .getMany();
+    const realLimitPlusOne = realLimit + 1;
+
+    const replacements: any[] = [realLimitPlusOne];
+
+    if (cursor) {
+      replacements.push(new Date(parseInt(cursor)));
+    }
+
+    const posts = await dataSource.query(
+      `
+        select p.*, 
+        json_build_object(
+          'id', u.id,
+          'username', u.username,
+          'email', u.email,
+          'createdAt', u."createdAt",
+          'updatedAt', u."updatedAt"
+          ) author
+        from post p
+        inner join public.user u on u.id = p."authorId"
+        ${cursor ? `where p."createdAt" < $2` : ""}
+        order by p."createdAt" DESC
+        limit $1    
+    `,
+      replacements
+    );
+
+    // const qb = dataSource
+    //   .getRepository(Post)
+    //   .createQueryBuilder("p")
+    //   .leftJoinAndSelect("p.author", "u", '"u.id = p."authorId"')
+    //   .orderBy('p."createdAt"', "DESC")
+    //   .take(realLimitPlusOne);
+    // if (cursor) {
+    //   qb.where('p."createdAt" < :cursor', {
+    //     cursor: new Date(parseInt(cursor)),
+    //   });
+    // }
+
+    // const posts = await qb.getMany();
+
+    console.log(posts);
+    return {
+      posts: posts.slice(0, realLimit),
+      hasMore: posts.length === realLimitPlusOne,
+    };
   }
 
   //Get post by id
   @Query(() => Post, { nullable: true })
-  post(@Arg("id") id: number): Promise<Post | null> {
+  post(@Arg("id", () => Int) id: number): Promise<Post | null> {
     return Post.findOne({ where: { id } });
   }
 
@@ -56,7 +146,6 @@ export class PostResolver {
   }
 
   //Update Post
-  //always set the data types when using nullable
   @Mutation(() => Post, { nullable: true })
   async updatePost(
     @Arg("id") id: number,
@@ -74,7 +163,6 @@ export class PostResolver {
   }
 
   //Delete Post
-  //It will return a boolean after specific post has been deleted
   @Mutation(() => Boolean)
   async deletePost(@Arg("id") id: number): Promise<boolean> {
     await Post.delete(id);

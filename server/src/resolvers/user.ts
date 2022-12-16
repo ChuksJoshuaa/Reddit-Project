@@ -6,6 +6,8 @@ import {
   Ctx,
   ObjectType,
   Query,
+  FieldResolver,
+  Root,
 } from "type-graphql";
 import { MyContext } from "../types";
 import { User } from "../entities/User";
@@ -36,8 +38,25 @@ class UserResponse {
   user?: User;
 }
 
-@Resolver()
+@Resolver(User)
 export class UserResolver {
+  @FieldResolver(() => String)
+  //allow you to see your email of the posts you made while posts made by other authors, you won't see their email for security purpose
+  email(@Root() user: User, @Ctx() { req }: MyContext) {
+    //this is the current user and its okay to show them their own email
+    if (req.session.userId === user.id) {
+      return user.email;
+    }
+
+    //current user wants to see someone else email
+    return "";
+  }
+
+  @Query(() => [User])
+  async users(): Promise<User[]> {
+    return User.find({});
+  }
+
   @Mutation(() => UserResponse)
   async changePassword(
     @Arg("token") token: string,
