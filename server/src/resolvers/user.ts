@@ -12,7 +12,8 @@ import {
 import { MyContext } from "../types";
 import { User } from "../entities/User";
 import argon2 from "argon2";
-import "dotenv-safe/config";
+import dotenv from "dotenv";
+dotenv.config();
 import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constant";
 import { validateRegister } from "../../utils/validateRegister";
 import { UserPasswordInput } from "../../utils/UserPasswordInput";

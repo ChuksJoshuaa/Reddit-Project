@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
-import "dotenv-safe/config";
+import dotenv from "dotenv";
+dotenv.config();
 import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 import { Updoot } from "./entities/Updoot";
@@ -10,11 +11,8 @@ let portNumber = Number(process.env.DATABASE_PORT);
 
 export const dataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
   port: portNumber,
-  username: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME_PREFIX,
+  url: process.env.DATABASE_URL,
   synchronize: !__prod__,
   logging: !__prod__,
   migrations: [path.join(__dirname, "./migrations/*")],

@@ -3,6 +3,7 @@ declare namespace NodeJS {
     PORT: string;
     REDIS_URL: string;
     SESSION_SECRET: string | string[];
+    CORS_LOCAL_ORIGIN: string;
     CORS_ORIGIN: string;
     DATABASE_USER: string;
     DATABASE_PASSWORD: string;
@@ -11,6 +12,5 @@ declare namespace NodeJS {
     MONGO_URI: string;
     DATABASE_NAME: string;
     DATABASE_URL: string;
-    DATABASE_NAME_PREFIX: string;
   }
 }

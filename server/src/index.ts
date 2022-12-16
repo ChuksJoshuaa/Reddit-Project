@@ -1,8 +1,7 @@
 import "reflect-metadata";
-
 import { __prod__, COOKIE_NAME } from "./constant";
-import "dotenv-safe/config";
-
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -18,21 +17,16 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { dataSource } from "./appDataSource";
-// import { Post } from "./entities/Post";
 
 const main = async () => {
   await dataSource
     .initialize()
     .then((response) => {
       console.log(typeof response);
-      // here you can start to work with your database
     })
     .catch((error) => console.log(error));
 
   // dataSource.runMigrations();
-
-  //Delete all post record from database table
-  // await Post.delete({});
 
   const PORT = process.env.PORT || 5000;
   const secret_key = process.env.SESSION_SECRET;
@@ -41,10 +35,16 @@ const main = async () => {
 
   app.use(cookieParser());
 
-  const redis = new Redis();
-  // const redis = new Redis.Cluster([]);
+  const redis = new Redis(process.env.REDIS_URL as any);
 
-  app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
+  app.use(
+    cors({
+      origin: __prod__
+        ? process.env.CORS_ORIGIN
+        : process.env.CORS_LOCAL_ORIGIN,
+      credentials: true,
+    })
+  );
 
   app.use(
     session({
@@ -56,7 +56,7 @@ const main = async () => {
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
-        httpOnly: false,
+        httpOnly: __prod__,
         sameSite: "lax",
         secure: __prod__,
       },
