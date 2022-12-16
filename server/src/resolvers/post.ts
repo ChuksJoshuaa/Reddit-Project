@@ -121,7 +121,6 @@ export class PostResolver {
 
     // const posts = await qb.getMany();
 
-    console.log(posts);
     return {
       posts: posts.slice(0, realLimit),
       hasMore: posts.length === realLimitPlusOne,

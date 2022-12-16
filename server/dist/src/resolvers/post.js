@@ -99,7 +99,6 @@ let PostResolver = class PostResolver {
         order by p."createdAt" DESC
         limit $1    
     `, replacements);
-            console.log(posts);
             return {
                 posts: posts.slice(0, realLimit),
                 hasMore: posts.length === realLimitPlusOne,

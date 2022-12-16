@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const Index = () => {
   const [variables, setVariables] = useState({
-    limit: 10,
+    limit: 15,
     cursor: null as null | string,
   });
   const [{ data, fetching }] = usePostsQuery({
@@ -44,6 +44,12 @@ const Index = () => {
           {data!.posts.posts.map((item) => (
             <Box p={5} shadow="md" borderWidth="1px" key={item.id}>
               <Heading fontSize="xl">{item.title}</Heading>
+              <Flex>
+                <Text color="teal">posted by</Text>
+                <Text pl="1" color="teal">
+                  {item.author.username}
+                </Text>
+              </Flex>
               <Text mt={4}>{item.descriptionSnippet}...</Text>
               <Button mt={2} colorScheme="red">
                 <Link href={`/single-page/${item.id}`}>Read More</Link>
