@@ -3,8 +3,19 @@ import { Navbar } from "../components";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { usePostsQuery } from "../generated/graphql";
-import { Box, Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Stack,
+  Divider,
+  Text,
+} from "@chakra-ui/react";
 import Link from "next/link";
+import { ChevronUpIcon, ChevronDownIcon, Icon } from "@chakra-ui/icons";
+import { FaUser } from "react-icons/fa";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -34,42 +45,76 @@ const Index = () => {
 
   return (
     <>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Lobster+Two&family=Cormorant+Garamond:wght@300&family=Racing+Sans+One&family=Rajdhani:wght@500&family=Roboto+Mono:wght@100&display=swap"
+        rel="stylesheet"
+      ></link>
       <Navbar />
-      <h1>Home</h1>
-      <br />
-      {!data && fetching ? (
-        <div>Loading...</div>
-      ) : (
-        <Stack spacing={8}>
-          {data!.posts.posts.map((item) => (
-            <Box p={5} shadow="md" borderWidth="1px" key={item.id}>
-              <Heading fontSize="xl">{item.title}</Heading>
-              <Flex>
-                <Text color="teal">posted by</Text>
-                <Text pl="1" color="teal">
-                  {item.author.username}
-                </Text>
-              </Flex>
-              <Text mt={4}>{item.descriptionSnippet}...</Text>
-              <Button mt={2} colorScheme="red">
-                <Link href={`/single-page/${item.id}`}>Read More</Link>
-              </Button>
-            </Box>
-          ))}
-        </Stack>
-      )}
-      {data && data.posts.hasMore ? (
-        <Flex>
-          <Button
-            isLoading={fetching}
-            m="auto"
-            my={8}
-            onClick={() => loadMore(data)}
-          >
-            Load More
-          </Button>
-        </Flex>
-      ) : null}
+      <Container maxW="700px" style={{ fontFamily: '"Rajdhani", sans-serif' }}>
+        <h1>Home</h1>
+        <br />
+        {!data && fetching ? (
+          <div>Loading...</div>
+        ) : (
+          <Stack spacing={8}>
+            {data!.posts.posts.map((item) => (
+              <Box p={3} shadow="md" borderWidth="1px" key={item.id}>
+                <Flex
+                  direction="row"
+                  justify="space-between"
+                  alignItems="center"
+                  mb={1}
+                >
+                  <Heading
+                    fontSize="xl"
+                    style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                  >
+                    {item.title}
+                  </Heading>
+                  <Flex>
+                    <Icon as={FaUser} boxSize={4} color="red.500"></Icon>
+                    <Text pl="1" color="red.500">
+                      {item.author.username}
+                    </Text>
+                  </Flex>
+                </Flex>
+                <Divider />
+                <Flex direction="row" alignItems="flex-start" mt={3}>
+                  <Flex direction="column" mr={10}>
+                    <ChevronUpIcon w={8} h={8} color="blackAlpha.900" />
+                    <Text ml={3}>1</Text>
+                    <ChevronDownIcon w={8} h={8} color="blackAlpha.900" />
+                  </Flex>
+                  <Box>
+                    <Text mt={1}>{item.descriptionSnippet}...</Text>
+                    <Button
+                      mt={2}
+                      colorScheme="gray"
+                      fontSize="xs"
+                      size="xs"
+                      variant="solid"
+                    >
+                      <Link href={`/single-page/${item.id}`}>Read More</Link>
+                    </Button>
+                  </Box>
+                </Flex>
+              </Box>
+            ))}
+          </Stack>
+        )}
+        {data && data.posts.hasMore ? (
+          <Flex>
+            <Button
+              isLoading={fetching}
+              m="auto"
+              my={8}
+              onClick={() => loadMore(data)}
+            >
+              Load More
+            </Button>
+          </Flex>
+        ) : null}
+      </Container>
     </>
   );
 };

@@ -18,13 +18,8 @@ const Navbar: React.FC<IProps> = () => {
 
   let body = null;
 
-  //data is loading
   if (fetching) {
-    //user not logged in
-  }
-
-  //user not logged in
-  else if (!data?.me) {
+  } else if (!data?.me) {
     body = (
       <>
         <Link href="/login" style={{ marginRight: "1em" }}>
@@ -33,19 +28,21 @@ const Navbar: React.FC<IProps> = () => {
         <Link href="/register">Register</Link>
       </>
     );
-  }
-
-  //user is logged in
-  else {
+  } else {
     body = (
       <Flex>
-        <Box mr={2}>{data.me.username}</Box>
+        <Box mr={2} fontSize="xl" textTransform="capitalize">
+          {data.me.username}
+        </Box>
         <Button
           onClick={async () => {
             await logout();
           }}
           variant="link"
+          colorScheme="blackAlpha"
           isLoading={logoutFetching}
+          mr={10}
+          fontSize="xl"
         >
           Logout
         </Button>
@@ -53,13 +50,21 @@ const Navbar: React.FC<IProps> = () => {
     );
   }
   return (
-    <Flex bg="tan" p={4} fontWeight="bold" justify="space-between">
-      <Link href="/" style={{ marginRight: "1em" }}>
-        Home
-      </Link>
-      <Link href="/create-post" style={{ marginRight: "1em" }}>
-        CreatePost
-      </Link>
+    <Flex
+      bg="blackAlpha.600"
+      p={4}
+      fontWeight="bold"
+      justify="space-between"
+      style={{ fontFamily: '"Rajdhani", sans-serif' }}
+    >
+      <Box px={10} fontSize="xl" textTransform="capitalize">
+        <Link href="/" style={{ marginRight: "1em" }}>
+          Home
+        </Link>
+        <Link href="/create-post" style={{ marginRight: "1em" }}>
+          CreatePost
+        </Link>
+      </Box>
       <Box ml={"auto"}>{body}</Box>
     </Flex>
   );
