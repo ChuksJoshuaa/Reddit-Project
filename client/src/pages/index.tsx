@@ -82,7 +82,7 @@ const Index = () => {
                 <Flex direction="row" alignItems="flex-start" mt={3}>
                   <Flex direction="column" mr={10}>
                     <ChevronUpIcon w={8} h={8} color="blackAlpha.900" />
-                    <Text ml={3}>1</Text>
+                    <Text ml={3}>{item.points}</Text>
                     <ChevronDownIcon w={8} h={8} color="blackAlpha.900" />
                   </Flex>
                   <Box>
