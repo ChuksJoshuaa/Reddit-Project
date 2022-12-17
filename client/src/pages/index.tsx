@@ -1,21 +1,22 @@
-import React, { useState } from "react";
-import { Navbar } from "../components";
-import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../utils/createUrqlClient";
-import { usePostsQuery } from "../generated/graphql";
+import { Icon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
   Container,
+  Divider,
   Flex,
   Heading,
   Stack,
-  Divider,
   Text,
 } from "@chakra-ui/react";
+import { withUrqlClient } from "next-urql";
 import Link from "next/link";
-import { ChevronUpIcon, ChevronDownIcon, Icon } from "@chakra-ui/icons";
+import { useState } from "react";
 import { FaUser } from "react-icons/fa";
+import { Navbar, Updoot } from "../components";
+import { usePostsQuery } from "../generated/graphql";
+import { createUrqlClient } from "../utils/createUrqlClient";
+import { postsDataTypes } from "../utils/dataTypes";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -36,7 +37,7 @@ const Index = () => {
     );
   }
 
-  const loadMore = (data: any) => {
+  const loadMore = (data: postsDataTypes) => {
     setVariables({
       limit: variables.limit,
       cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
@@ -51,8 +52,9 @@ const Index = () => {
       ></link>
       <Navbar />
       <Container maxW="700px" style={{ fontFamily: '"Rajdhani", sans-serif' }}>
-        <h1>Home</h1>
-        <br />
+        <Box mt={7} fontSize="2xl" mb={2}>
+          Reddit
+        </Box>
         {!data && fetching ? (
           <div>Loading...</div>
         ) : (
@@ -80,11 +82,7 @@ const Index = () => {
                 </Flex>
                 <Divider />
                 <Flex direction="row" alignItems="flex-start" mt={3}>
-                  <Flex direction="column" mr={10}>
-                    <ChevronUpIcon w={8} h={8} color="blackAlpha.900" />
-                    <Text ml={3}>{item.points}</Text>
-                    <ChevronDownIcon w={8} h={8} color="blackAlpha.900" />
-                  </Flex>
+                  <Updoot item={item} />
                   <Box>
                     <Text mt={1}>{item.descriptionSnippet}...</Text>
                     <Button
