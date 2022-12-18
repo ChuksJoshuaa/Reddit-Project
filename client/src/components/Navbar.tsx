@@ -1,6 +1,7 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex, Icon } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
+import { FaUser } from "react-icons/fa";
 import { useMutation } from "urql";
 import { useMeQuery, useLogoutMutation } from "../generated/graphql";
 // import { isServer } from "../utils/isServer";
@@ -21,16 +22,17 @@ const Navbar: React.FC<IProps> = () => {
   if (fetching) {
   } else if (!data?.me) {
     body = (
-      <>
+      <Box fontSize="xl">
         <Link href="/login" style={{ marginRight: "1em" }}>
           Login
         </Link>
         <Link href="/register">Register</Link>
-      </>
+      </Box>
     );
   } else {
     body = (
       <Flex>
+        <Icon as={FaUser} boxSize={4} mt={2} mr={1}></Icon>
         <Box mr={2} fontSize="xl" textTransform="capitalize">
           {data.me.username}
         </Box>
@@ -51,11 +53,13 @@ const Navbar: React.FC<IProps> = () => {
   }
   return (
     <Flex
-      bg="blackAlpha.600"
       p={4}
-      fontWeight="bold"
+      fontWeight="medium"
       justify="space-between"
-      style={{ fontFamily: '"Rajdhani", sans-serif' }}
+      style={{
+        fontFamily: '"Rajdhani", sans-serif',
+        backgroundColor: "rgba(210, 214, 214, 0.7)",
+      }}
     >
       <Box px={10} fontSize="xl" textTransform="capitalize">
         <Link href="/" style={{ marginRight: "1em" }}>
