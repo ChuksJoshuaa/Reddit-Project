@@ -26,6 +26,7 @@ const Authenticated_1 = require("../middleware/Authenticated");
 const type_graphql_1 = require("type-graphql");
 const Post_1 = require("../entities/Post");
 const appDataSource_1 = require("../appDataSource");
+const Updoot_1 = require("../entities/Updoot");
 let PostInput = class PostInput {
 };
 __decorate([
@@ -61,18 +62,34 @@ let PostResolver = class PostResolver {
             const isUpdoot = value !== -1;
             const realValue = isUpdoot ? 1 : -1;
             const { userId } = req.session;
-            yield appDataSource_1.dataSource.query(`
-    START TRANSACTION;
-
-    insert into updoot ("userId", "postId", value)
-    values (${userId}, ${postId}, ${realValue});
-
-    update post     
-    set points = points + ${realValue}
-    where id = ${postId};
-
-    COMMIT;
-    `);
+            const updoot = yield Updoot_1.Updoot.findOne({ where: { postId, userId } });
+            if (updoot && updoot.value !== realValue) {
+                yield appDataSource_1.dataSource.transaction((tm) => __awaiter(this, void 0, void 0, function* () {
+                    yield tm.query(`
+          update updoot     
+          set value = $1
+          where "postId" = $2 and "userId" = $3
+          `, [realValue, postId, userId]);
+                    yield tm.query(`
+          update post     
+          set points = points + $1
+          where id = $2
+          `, [2 * realValue, postId]);
+                }));
+            }
+            else if (!updoot) {
+                yield appDataSource_1.dataSource.transaction((tm) => __awaiter(this, void 0, void 0, function* () {
+                    yield tm.query(`
+           insert into updoot ("userId", "postId", value)
+            values ($1, $2, $3)
+        `, [userId, postId, realValue]);
+                    yield tm.query(`
+          update post     
+          set points = points + $1
+          where id = $2
+          `, [realValue, postId]);
+                }));
+            }
             return true;
         });
     }
