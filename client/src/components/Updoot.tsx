@@ -9,6 +9,7 @@ const Updoot = ({ item }: itemSingleProps) => {
     "updoot-loading" | "downdoot-loading" | "not-loading"
   >("not-loading");
   const [, vote] = useVoteMutation();
+
   return (
     <>
       <Flex direction="column" mr={10} alignItems="center">
@@ -16,7 +17,11 @@ const Updoot = ({ item }: itemSingleProps) => {
           icon={<ChevronUpIcon />}
           aria-label="updoot post"
           isLoading={loadingState === "updoot-loading"}
+          colorScheme={item.voteStatus === 1 ? "teal" : undefined}
           onClick={async () => {
+            if (item.voteStatus === 1) {
+              return;
+            }
             setLoadingState("updoot-loading");
             await vote({
               postId: item.id,
@@ -30,8 +35,12 @@ const Updoot = ({ item }: itemSingleProps) => {
         <IconButton
           icon={<ChevronDownIcon />}
           aria-label="downdoot post"
+          colorScheme={item.voteStatus === -1 ? "red" : undefined}
           isLoading={loadingState === "downdoot-loading"}
           onClick={async () => {
+            if (item.voteStatus === -1) {
+              return;
+            }
             setLoadingState("downdoot-loading");
             await vote({
               postId: item.id,

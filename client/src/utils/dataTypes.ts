@@ -8,6 +8,7 @@ export interface itemProps {
   id: number;
   title: string;
   points: number;
+  voteStatus: number | null;
   descriptionSnippet: string;
   createdAt: string;
   updatedAt: string;

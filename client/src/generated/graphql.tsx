@@ -95,6 +95,7 @@ export type Post = {
   points: Scalars['Float'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
+  voteStatus?: Maybe<Scalars['Int']>;
 };
 
 export type PostInput = {
@@ -221,7 +222,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', id: number, title: string, points: number, descriptionSnippet: string, createdAt: string, updatedAt: string, author: { __typename?: 'User', id: number, username: string, email: string } }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', id: number, title: string, points: number, descriptionSnippet: string, createdAt: string, updatedAt: string, voteStatus?: number | null, author: { __typename?: 'User', id: number, username: string, email: string } }> } };
 
 export const RegularPostFragmentDoc = gql`
     fragment RegularPost on Post {
@@ -367,6 +368,7 @@ export const PostsDocument = gql`
       descriptionSnippet
       createdAt
       updatedAt
+      voteStatus
       author {
         id
         username

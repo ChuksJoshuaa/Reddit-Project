@@ -8,6 +8,7 @@ query Posts($limit: Int!, $cursor: String) {
       descriptionSnippet
       createdAt
       updatedAt
+      voteStatus
       author {
         id
         username

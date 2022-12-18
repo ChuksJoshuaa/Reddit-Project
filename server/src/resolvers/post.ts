@@ -56,6 +56,8 @@ export class PostResolver {
     if (updoot && updoot.value !== realValue) {
       //if the user has voted on the post before
       //and they are changing their vote
+
+      let realValueDigit = 2 * realValue;
       await dataSource.transaction(async (tm) => {
         await tm.query(
           `
@@ -72,7 +74,7 @@ export class PostResolver {
           set points = points + $1
           where id = $2
           `,
-          [2 * realValue, postId]
+          [realValueDigit, postId]
         );
       });
     } else if (!updoot) {
@@ -102,12 +104,13 @@ export class PostResolver {
   @Query(() => PaginatedPosts)
   async posts(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
+    @Ctx() { req }: MyContext
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
     const realLimitPlusOne = realLimit + 1;
 
-    const replacements: any[] = [realLimitPlusOne];
+    const replacements: any[] = [realLimitPlusOne, req.session.userId];
 
     if (cursor) {
       replacements.push(new Date(parseInt(cursor)));
@@ -122,10 +125,15 @@ export class PostResolver {
           'email', u.email,
           'createdAt', u."createdAt",
           'updatedAt', u."updatedAt"
-          ) author
+          ) author,
+          ${
+            req.session.userId
+              ? `(select value from updoot where "userId" = $2 and "postId" = p.id) as "voteStatus"`
+              : 'null as "voteStatus"'
+          }
         from post p
         inner join public.user u on u.id = p."authorId"
-        ${cursor ? `where p."createdAt" < $2` : ""}
+        ${cursor ? `where p."createdAt" < $3` : ""}
         order by p."createdAt" DESC
         limit $1    
     `,
