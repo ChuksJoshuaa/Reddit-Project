@@ -4,8 +4,8 @@ import React from "react";
 import { FaUser } from "react-icons/fa";
 import { useMutation } from "urql";
 import { useMeQuery, useLogoutMutation } from "../generated/graphql";
-// import { isServer } from "../utils/isServer";
 import { LogoutDocument } from "../mutations/userMutations";
+import { isServer } from "../utils/isServer";
 
 interface IProps {}
 
@@ -14,7 +14,7 @@ const Navbar: React.FC<IProps> = () => {
   // const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
 
   const [{ data, fetching }] = useMeQuery({
-    // pause: isServer(),
+    pause: isServer() as any,
   });
 
   let body = null;
