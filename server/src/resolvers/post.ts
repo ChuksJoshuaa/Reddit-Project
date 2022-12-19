@@ -16,7 +16,7 @@ import {
 } from "type-graphql";
 import { Post } from "../entities/Post";
 import { dataSource } from "../appDataSource";
-// import { Updoot } from "../entities/Updoot";
+import { Updoot } from "../entities/Updoot";
 
 @InputType()
 class PostInput {
@@ -50,42 +50,75 @@ export class PostResolver {
     const isUpdoot = value !== -1;
     const realValue = isUpdoot ? 1 : -1;
     const { userId } = req.session;
-    // await Updoot.insert({
-    //   userId,
-    //   postId,
-    //   value: realValue,
-    // });
 
-    await dataSource.query(
-      `
-    START TRANSACTION;
+    const updoot = await Updoot.findOne({ where: { postId, userId } });
 
-    insert into updoot ("userId", "postId", value)
-    values (${userId}, ${postId}, ${realValue});
+    if (updoot && updoot.value !== realValue) {
+      //if the user has voted on the post before
+      //and they are changing their vote
 
-    update post     
-    set points = points + ${realValue}
-    where id = ${postId};
+      let realValueDigit = 2 * realValue;
+      await dataSource.transaction(async (tm) => {
+        await tm.query(
+          `
+          update updoot     
+          set value = $1
+          where "postId" = $2 and "userId" = $3
+          `,
+          [realValue, postId, userId]
+        );
 
-    COMMIT;
-    `
-    );
+        await tm.query(
+          `
+          update post     
+          set points = points + $1
+          where id = $2
+          `,
+          [realValueDigit, postId]
+        );
+      });
+    } else if (!updoot) {
+      //has never voted before
+      await dataSource.transaction(async (tm) => {
+        await tm.query(
+          `
+           insert into updoot ("userId", "postId", value)
+            values ($1, $2, $3)
+        `,
+          [userId, postId, realValue]
+        );
 
+        await tm.query(
+          `
+          update post     
+          set points = points + $1
+          where id = $2
+          `,
+          [realValue, postId]
+        );
+      });
+    }
     return true;
   }
 
   @Query(() => PaginatedPosts)
   async posts(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
+    @Ctx() { req }: MyContext
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
     const realLimitPlusOne = realLimit + 1;
 
     const replacements: any[] = [realLimitPlusOne];
+    if (req.session.userId) {
+      replacements.push(req.session.userId);
+    }
 
+    let cursorIndex = 3;
     if (cursor) {
       replacements.push(new Date(parseInt(cursor)));
+      cursorIndex = replacements.length;
     }
 
     const posts = await dataSource.query(
@@ -97,10 +130,15 @@ export class PostResolver {
           'email', u.email,
           'createdAt', u."createdAt",
           'updatedAt', u."updatedAt"
-          ) author
+          ) author,
+          ${
+            req.session.userId
+              ? `(select value from updoot where "userId" = $2 and "postId" = p.id) as "voteStatus"`
+              : 'null as "voteStatus"'
+          }
         from post p
         inner join public.user u on u.id = p."authorId"
-        ${cursor ? `where p."createdAt" < $2` : ""}
+        ${cursor ? `where p."createdAt" < $${cursorIndex}` : ""}
         order by p."createdAt" DESC
         limit $1    
     `,
@@ -121,7 +159,6 @@ export class PostResolver {
 
     // const posts = await qb.getMany();
 
-    console.log(posts);
     return {
       posts: posts.slice(0, realLimit),
       hasMore: posts.length === realLimitPlusOne,
