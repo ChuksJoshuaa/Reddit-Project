@@ -54,7 +54,7 @@ const Index = () => {
       ></link>
       <Navbar />
       <Container
-        maxW="700px"
+        maxW="950px"
         style={{ fontFamily: '"Rajdhani", sans-serif' }}
         mt={10}
       >

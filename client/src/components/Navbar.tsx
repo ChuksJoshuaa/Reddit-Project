@@ -31,7 +31,7 @@ const Navbar: React.FC<IProps> = () => {
     );
   } else {
     body = (
-      <Flex alignItems="center" justify="space-between" mt={1}>
+      <Flex alignItems="center" mt={1}>
         <Icon as={FaUser} boxSize={4} mr={1}></Icon>
         <Box mr={2} fontSize="xl" textTransform="capitalize">
           {data.me.username}
@@ -41,8 +41,6 @@ const Navbar: React.FC<IProps> = () => {
             await logout();
           }}
           variant="link"
-          className="logout"
-          colorScheme="blackAlpha"
           isLoading={logoutFetching}
           fontSize="xl"
         >
@@ -52,33 +50,39 @@ const Navbar: React.FC<IProps> = () => {
     );
   }
   return (
-    <Flex
-      p={2}
-      fontWeight="medium"
-      justify="space-between"
+    <Box
       style={{
         fontFamily: '"Rajdhani", sans-serif',
         backgroundColor: "rgba(210, 214, 214, 0.7)",
       }}
     >
       <Flex
-        className="navbar-component"
+        pt={2}
+        pb={2}
+        maxW="950px"
+        mx="auto"
+        fontWeight="medium"
         justify="space-between"
-        alignItems="center"
       >
-        <Box fontSize="2xl" textTransform="capitalize" color="red">
-          <Link href="/" style={{ marginRight: "1em" }}>
-            Reddit
-          </Link>
-        </Box>
-        <Box fontSize="xl" textTransform="lowercase">
-          <Link href="/create-post" style={{ marginRight: "1em" }}>
-            CreatePost
-          </Link>
-        </Box>
+        <Flex
+          className="navbar-component"
+          justify="space-between"
+          alignItems="center"
+        >
+          <Box fontSize="2xl" textTransform="capitalize" color="red">
+            <Link href="/" style={{ marginRight: "1em" }}>
+              Reddit
+            </Link>
+          </Box>
+          <Box fontSize="xl" textTransform="lowercase">
+            <Link href="/create-post" style={{ marginRight: "1em" }}>
+              CreatePost
+            </Link>
+          </Box>
+        </Flex>
+        <Box ml={"auto"}>{body}</Box>
       </Flex>
-      <Box ml={"auto"}>{body}</Box>
-    </Flex>
+    </Box>
   );
 };
 
