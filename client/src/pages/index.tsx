@@ -53,10 +53,11 @@ const Index = () => {
         rel="stylesheet"
       ></link>
       <Navbar />
-      <Container maxW="700px" style={{ fontFamily: '"Rajdhani", sans-serif' }}>
-        <Box mt={7} fontSize="2xl" mb={2}>
-          Reddit
-        </Box>
+      <Container
+        maxW="700px"
+        style={{ fontFamily: '"Rajdhani", sans-serif' }}
+        mt={10}
+      >
         {!data && fetching ? (
           <div>Loading...</div>
         ) : (
@@ -71,6 +72,7 @@ const Index = () => {
                 >
                   <Heading
                     fontSize="xl"
+                    textTransform="capitalize"
                     style={{ fontFamily: '"Rajdhani", sans-serif' }}
                   >
                     {item.title}

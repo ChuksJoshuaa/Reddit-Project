@@ -22,7 +22,7 @@ const Navbar: React.FC<IProps> = () => {
   if (fetching) {
   } else if (!data?.me) {
     body = (
-      <Box fontSize="xl">
+      <Box fontSize="xl" mt={1}>
         <Link href="/login" style={{ marginRight: "1em" }}>
           Login
         </Link>
@@ -31,8 +31,8 @@ const Navbar: React.FC<IProps> = () => {
     );
   } else {
     body = (
-      <Flex>
-        <Icon as={FaUser} boxSize={4} mt={2} mr={1}></Icon>
+      <Flex alignItems="center" justify="space-between" mt={1}>
+        <Icon as={FaUser} boxSize={4} mr={1}></Icon>
         <Box mr={2} fontSize="xl" textTransform="capitalize">
           {data.me.username}
         </Box>
@@ -41,9 +41,9 @@ const Navbar: React.FC<IProps> = () => {
             await logout();
           }}
           variant="link"
+          className="logout"
           colorScheme="blackAlpha"
           isLoading={logoutFetching}
-          mr={10}
           fontSize="xl"
         >
           Logout
@@ -53,7 +53,7 @@ const Navbar: React.FC<IProps> = () => {
   }
   return (
     <Flex
-      p={4}
+      p={2}
       fontWeight="medium"
       justify="space-between"
       style={{
@@ -61,14 +61,22 @@ const Navbar: React.FC<IProps> = () => {
         backgroundColor: "rgba(210, 214, 214, 0.7)",
       }}
     >
-      <Box px={10} fontSize="xl" textTransform="capitalize">
-        <Link href="/" style={{ marginRight: "1em" }}>
-          Home
-        </Link>
-        <Link href="/create-post" style={{ marginRight: "1em" }}>
-          CreatePost
-        </Link>
-      </Box>
+      <Flex
+        className="navbar-component"
+        justify="space-between"
+        alignItems="center"
+      >
+        <Box fontSize="2xl" textTransform="capitalize" color="red">
+          <Link href="/" style={{ marginRight: "1em" }}>
+            Reddit
+          </Link>
+        </Box>
+        <Box fontSize="xl" textTransform="lowercase">
+          <Link href="/create-post" style={{ marginRight: "1em" }}>
+            CreatePost
+          </Link>
+        </Box>
+      </Flex>
       <Box ml={"auto"}>{body}</Box>
     </Flex>
   );
