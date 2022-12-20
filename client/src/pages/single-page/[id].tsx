@@ -1,11 +1,10 @@
-import React from "react";
-import { usePostQuery } from "../../generated/graphql";
-import { useRouter } from "next/router";
-import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../../utils/createUrqlClient";
-import { Layout } from "../../components";
 import { Box, Button, Divider } from "@chakra-ui/react";
+import { withUrqlClient } from "next-urql";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { Layout } from "../../components";
+import { usePostQuery } from "../../generated/graphql";
+import { createUrqlClient } from "../../utils/createUrqlClient";
 
 const SinglePage = () => {
   const router = useRouter();
@@ -55,6 +54,7 @@ const SinglePage = () => {
         </Box>
         <Divider />
         <Box p={2}>{item?.description}</Box>
+
         <Button m={3} colorScheme="teal">
           <Link href={`/`}>Go Back</Link>
         </Button>

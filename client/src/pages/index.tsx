@@ -1,4 +1,4 @@
-import { Icon } from "@chakra-ui/icons";
+import { DeleteIcon, Icon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -14,19 +14,29 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { Navbar, Updoot } from "../components";
-import { usePostsQuery } from "../generated/graphql";
+import {
+  useDeletePostMutation,
+  useMeQuery,
+  usePostsQuery,
+} from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { itemProps, postsDataTypes } from "../utils/dataTypes";
 import { isServer } from "../utils/isServer";
 // import { ReqChecker } from "../utils/reqCheck";
 
 const Index = () => {
+  const [{ error: errorr, data: deleteData }, deletePost] =
+    useDeletePostMutation();
   const [variables, setVariables] = useState({
     limit: 5,
     cursor: null as null | string,
   });
   const [{ data, fetching }] = usePostsQuery({
     variables,
+  });
+
+  const [{ data: meData }] = useMeQuery({
+    pause: isServer() as any,
   });
 
   if (!fetching && !data) {
@@ -67,46 +77,63 @@ const Index = () => {
                 <Link href="/create-post">CreatePost</Link>
               </Button>
             </Box>
-            {data!.posts.posts.map((item) => (
-              <Box pt={0} p={3} shadow="md" borderWidth="1px" key={item.id}>
-                <Flex
-                  direction="row"
-                  justify="space-between"
-                  alignItems="center"
-                  mb={1}
-                >
-                  <Heading
-                    fontSize="xl"
-                    textTransform="capitalize"
-                    style={{ fontFamily: '"Rajdhani", sans-serif' }}
+            {data!.posts.posts.map((item) =>
+              !item ? null : (
+                <Box pt={0} p={3} shadow="md" borderWidth="1px" key={item.id}>
+                  <Flex
+                    direction="row"
+                    justify="space-between"
+                    alignItems="center"
+                    mb={1}
                   >
-                    {item.title}
-                  </Heading>
-                  <Flex>
-                    <Icon as={FaUser} boxSize={4} color="red.500"></Icon>
-                    <Text pl="1" color="red.500">
-                      {item.author.username}
-                    </Text>
-                  </Flex>
-                </Flex>
-                <Divider />
-                <Flex direction="row" alignItems="flex-start" mt={3}>
-                  <Updoot item={item as itemProps} />
-                  <Box>
-                    <Text mt={1}>{item.descriptionSnippet}...</Text>
-                    <Button
-                      mt={2}
-                      colorScheme="gray"
-                      fontSize="xs"
-                      size="xs"
-                      variant="solid"
+                    <Heading
+                      fontSize="xl"
+                      textTransform="capitalize"
+                      style={{ fontFamily: '"Rajdhani", sans-serif' }}
                     >
-                      <Link href={`/single-page/${item.id}`}>Read More</Link>
-                    </Button>
-                  </Box>
-                </Flex>
-              </Box>
-            ))}
+                      {item.title}
+                    </Heading>
+                    <Flex>
+                      <Icon as={FaUser} boxSize={4} color="tomato"></Icon>
+                      <Text pl="1" color="tomato">
+                        {item.author.username}
+                      </Text>
+                    </Flex>
+                  </Flex>
+                  <Divider />
+                  <Flex direction="row" alignItems="flex-start" mt={3}>
+                    <Updoot item={item as itemProps} />
+                    <Box>
+                      <Text mt={1}>{item.descriptionSnippet}...</Text>
+                      <Button
+                        mt={2}
+                        colorScheme="gray"
+                        fontSize="xs"
+                        size="xs"
+                        variant="solid"
+                      >
+                        <Link href={`/single-page/${item.id}`}>Read More</Link>
+                      </Button>
+                    </Box>
+                  </Flex>
+                  {meData?.me?.id === item?.author?.id ? (
+                    <Flex justify="flex-end" alignItems="center">
+                      <Box style={{ visibility: "hidden" }}>.</Box>
+                      <DeleteIcon
+                        w={6}
+                        h={6}
+                        color="red.500"
+                        onClick={() =>
+                          deletePost({
+                            id: item?.id,
+                          })
+                        }
+                      />
+                    </Flex>
+                  ) : null}
+                </Box>
+              )
+            )}
           </Stack>
         )}
         {data && data.posts.hasMore ? (

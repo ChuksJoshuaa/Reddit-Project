@@ -13,6 +13,7 @@ import {
   MeDocument,
   MeQuery,
   RegisterMutation,
+  DeletePostMutationVariables,
   VoteMutationVariables,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
@@ -110,6 +111,12 @@ export const createUrqlClient = (
         //Updates the login details by updating the previous cache to the new cache
         updates: {
           Mutation: {
+            deletePost: (_result, args, cache, info) => {
+              cache.invalidate({
+                __typename: "Post",
+                id: (args as DeletePostMutationVariables).id,
+              });
+            },
             vote: (_result, args, cache, info) => {
               const { postId, value } = args as VoteMutationVariables;
               const data = cache.readFragment(
