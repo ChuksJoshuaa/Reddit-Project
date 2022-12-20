@@ -80,8 +80,12 @@ export const cursorPagination = (): Resolver => {
   };
 };
 
-export const createUrqlClient = (ssrExchange: any, ctx?: NextPageContext) => {
+export const createUrqlClient = (
+  ssrExchange: Exchange,
+  ctx?: NextPageContext
+) => {
   let cookie = "";
+
   if (isServer()) {
     cookie = ctx?.req?.headers?.cookie as string;
   }
