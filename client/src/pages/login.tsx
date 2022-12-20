@@ -8,9 +8,7 @@ import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import NextLink from "next/link";
 
-interface IProps {}
-
-const Login: React.FC<IProps> = () => {
+const Login = () => {
   const [, login] = useLoginMutation();
   const router = useRouter();
 
@@ -34,10 +32,6 @@ const Login: React.FC<IProps> = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <link
-              href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Lobster+Two&family=Cormorant+Garamond:wght@300&family=Racing+Sans+One&family=Rajdhani:wght@500&family=Roboto+Mono:wght@100&display=swap"
-              rel="stylesheet"
-            ></link>
             <InputField
               name="email"
               placeholder="email"
@@ -52,7 +46,10 @@ const Login: React.FC<IProps> = () => {
                 type="password"
               />
             </Box>
-            <Flex justify="space-between">
+            <Flex
+              justify="space-between"
+              style={{ fontFamily: '"Rajdhani", sans-serif' }}
+            >
               <Button
                 mt={4}
                 type="submit"
@@ -61,10 +58,7 @@ const Login: React.FC<IProps> = () => {
               >
                 login
               </Button>
-              <NextLink
-                href="/forgot-password"
-                style={{ color: "crimson", marginTop: "1.5rem" }}
-              >
+              <NextLink href="/forgot-password" className="forgot-component">
                 Forgot-password?
               </NextLink>
             </Flex>

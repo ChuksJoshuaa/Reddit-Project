@@ -57,3 +57,8 @@ code {
     display: block;
   }
 }
+
+.forgot-component {
+  color: crimson;
+  margin-top: 1.5rem;
+}

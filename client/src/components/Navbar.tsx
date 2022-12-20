@@ -23,9 +23,7 @@ const Navbar = () => {
     body = (
       <Box fontSize="xl" mt={1} pr={5}>
         <Button colorScheme="teal" size="md" textTransform="lowercase" mr={2}>
-          <Link href="/login" style={{ marginRight: "1em" }}>
-            Login
-          </Link>
+          <Link href="/login">Login</Link>
         </Button>
         <Button colorScheme="teal" size="md" textTransform="lowercase">
           <Link href="/register">Register</Link>
@@ -36,7 +34,7 @@ const Navbar = () => {
     body = (
       <Flex alignItems="center" mt={1} pr={5}>
         <Icon as={FaUser} boxSize={4} mr={1}></Icon>
-        <Box mr={2} fontSize="xl" textTransform="capitalize">
+        <Box mr={2} fontSize="xl" textTransform="lowercase">
           {data.me.username}
         </Box>
         <Button
@@ -46,6 +44,7 @@ const Navbar = () => {
           isLoading={logoutFetching}
           fontSize="xl"
           colorScheme="red"
+          textTransform="lowercase"
           size="md"
         >
           Logout
