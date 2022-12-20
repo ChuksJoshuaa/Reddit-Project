@@ -7,15 +7,7 @@ import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 
-interface IProps {}
-
-const Register: React.FC<IProps> = () => {
-  // const handleEnterKeyPress = (e: any) => {
-  //   e.preventDefault();
-  //   if (e.key === "Enter" || e.keyCode === 13) {
-  //     handleSubmit(e);
-  //   }
-  // };
+const Register = () => {
   const [, register] = useRegisterMutation();
   const Router = useRouter();
 
@@ -35,11 +27,7 @@ const Register: React.FC<IProps> = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <Form>
-            <link
-              href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Lobster+Two&family=Cormorant+Garamond:wght@300&family=Racing+Sans+One&family=Rajdhani:wght@500&family=Roboto+Mono:wght@100&display=swap"
-              rel="stylesheet"
-            ></link>
+          <Form style={{ fontFamily: '"Rajdhani", sans-serif' }}>
             <InputField name="username" placeholder="name" label="Username" />
             <Box mt={4}>
               <InputField

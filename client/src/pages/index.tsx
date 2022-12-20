@@ -16,11 +16,13 @@ import { FaUser } from "react-icons/fa";
 import { Navbar, Updoot } from "../components";
 import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { postsDataTypes } from "../utils/dataTypes";
+import { itemProps, postsDataTypes } from "../utils/dataTypes";
+import { isServer } from "../utils/isServer";
+// import { ReqChecker } from "../utils/reqCheck";
 
 const Index = () => {
   const [variables, setVariables] = useState({
-    limit: 15,
+    limit: 5,
     cursor: null as null | string,
   });
   const [{ data, fetching }] = usePostsQuery({
@@ -51,16 +53,22 @@ const Index = () => {
         rel="stylesheet"
       ></link>
       <Navbar />
-      <Container maxW="700px" style={{ fontFamily: '"Rajdhani", sans-serif' }}>
-        <Box mt={7} fontSize="2xl" mb={2}>
-          Reddit
-        </Box>
+      <Container
+        maxW="950px"
+        style={{ fontFamily: '"Rajdhani", sans-serif' }}
+        mt={10}
+      >
         {!data && fetching ? (
           <div>Loading...</div>
         ) : (
           <Stack spacing={8}>
+            <Box fontSize="xl" textTransform="lowercase" mb={0}>
+              <Button>
+                <Link href="/create-post">CreatePost</Link>
+              </Button>
+            </Box>
             {data!.posts.posts.map((item) => (
-              <Box p={3} shadow="md" borderWidth="1px" key={item.id}>
+              <Box pt={0} p={3} shadow="md" borderWidth="1px" key={item.id}>
                 <Flex
                   direction="row"
                   justify="space-between"
@@ -69,6 +77,7 @@ const Index = () => {
                 >
                   <Heading
                     fontSize="xl"
+                    textTransform="capitalize"
                     style={{ fontFamily: '"Rajdhani", sans-serif' }}
                   >
                     {item.title}
@@ -82,7 +91,7 @@ const Index = () => {
                 </Flex>
                 <Divider />
                 <Flex direction="row" alignItems="flex-start" mt={3}>
-                  <Updoot item={item} />
+                  <Updoot item={item as itemProps} />
                   <Box>
                     <Text mt={1}>{item.descriptionSnippet}...</Text>
                     <Button
@@ -106,7 +115,7 @@ const Index = () => {
               isLoading={fetching}
               m="auto"
               my={8}
-              onClick={() => loadMore(data)}
+              onClick={() => loadMore(data as postsDataTypes)}
             >
               Load More
             </Button>
@@ -120,4 +129,7 @@ const Index = () => {
 //{ ssr: true } => we use this when we are trying to load on the server side.
 // Also, we use this when will are trying to do any queries on the web page
 //And if the data that is queried is important to SEO for better performance
-export default withUrqlClient(createUrqlClient)(Index);
+export default withUrqlClient(
+  createUrqlClient,
+  isServer() ? { ssr: true } : { ssr: false }
+)(Index);

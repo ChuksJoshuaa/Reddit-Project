@@ -1,6 +1,12 @@
 import { cacheExchange, Resolver } from "@urql/exchange-graphcache";
 import gql from "graphql-tag";
-import { dedupExchange, fetchExchange, stringifyVariables } from "urql";
+import { NextPageContext } from "next";
+import {
+  dedupExchange,
+  Exchange,
+  fetchExchange,
+  stringifyVariables,
+} from "urql";
 import {
   LoginMutation,
   LogoutMutation,
@@ -10,7 +16,22 @@ import {
   VoteMutationVariables,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
+import { isServer } from "./isServer";
+import { pipe, tap } from "wonka";
+import Router from "next/router";
 
+const errorExchange: Exchange =
+  ({ forward }) =>
+  (ops$) => {
+    return pipe(
+      forward(ops$),
+      tap(({ error }) => {
+        if (error?.message.includes("not authenticated")) {
+          Router.replace("/login");
+        }
+      })
+    );
+  };
 export interface PaginationParams {
   offsetArgument?: string;
   limitArgument?: string;
@@ -59,11 +80,21 @@ export const cursorPagination = (): Resolver => {
   };
 };
 
-export const createUrqlClient = (ssrExchange: any) => {
+export const createUrqlClient = (
+  ssrExchange: Exchange,
+  ctx?: NextPageContext
+) => {
+  let cookie = "";
+
+  if (isServer()) {
+    cookie = ctx?.req?.headers?.cookie as string;
+  }
+
   return {
     url: "http://localhost:5000/graphql",
     fetchOptions: {
       credentials: "include" as const,
+      headers: cookie ? { cookie } : undefined,
     },
     exchanges: [
       dedupExchange,
@@ -86,6 +117,7 @@ export const createUrqlClient = (ssrExchange: any) => {
                   fragment _ on Post {
                     id
                     points
+                    voteStatus
                   }
                 `,
                 { id: postId } as any
@@ -95,7 +127,7 @@ export const createUrqlClient = (ssrExchange: any) => {
                   return;
                 }
                 const newPoints =
-                  (data.points as number) + (!data.voteStatus ? 1 : 2) * value;
+                  (data.points as number) + (!data.voteStatus ? 1 : 1) * value;
                 cache.writeFragment(
                   gql`
                     fragment __ on Post {
@@ -164,6 +196,7 @@ export const createUrqlClient = (ssrExchange: any) => {
           },
         },
       }),
+      errorExchange,
       ssrExchange,
       fetchExchange,
     ],

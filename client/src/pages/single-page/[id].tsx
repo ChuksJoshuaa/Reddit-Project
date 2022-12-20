@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { Layout } from "../../components";
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Divider } from "@chakra-ui/react";
 import Link from "next/link";
 
 const SinglePage = () => {
@@ -16,19 +16,44 @@ const SinglePage = () => {
     result = Number(router.query.id);
   }
 
-  const [{ data }] = usePostQuery({
+  const [{ data, error }] = usePostQuery({
     variables: {
       id: result,
     },
   });
 
+  if (error) {
+    return <Box>{error.message}</Box>;
+  }
+
   const item = data?.post;
+  if (!item) {
+    return (
+      <Layout>
+        <Box>Loading....</Box>
+      </Layout>
+    );
+  }
   return (
     <Layout>
-      <Box mx={2} mb={2} style={{ border: "1px solid silver" }}>
-        <Box p={2} pb={0} color="red" textAlign="center" fontSize="2xl">
+      <Box
+        mx={2}
+        mb={2}
+        shadow="md"
+        borderWidth="1px"
+        style={{ fontFamily: '"Rajdhani", sans-serif' }}
+      >
+        <Box
+          p={2}
+          pb={0}
+          fontWeight="semibold"
+          textTransform="capitalize"
+          textAlign="center"
+          fontSize="2xl"
+        >
           {item?.title}
         </Box>
+        <Divider />
         <Box p={2}>{item?.description}</Box>
         <Button m={3} colorScheme="teal">
           <Link href={`/`}>Go Back</Link>
