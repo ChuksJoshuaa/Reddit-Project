@@ -127,7 +127,7 @@ export const createUrqlClient = (
                   return;
                 }
                 const newPoints =
-                  (data.points as number) + (!data.voteStatus ? 1 : 2) * value;
+                  (data.points as number) + (!data.voteStatus ? 1 : 1) * value;
                 cache.writeFragment(
                   gql`
                     fragment __ on Post {
