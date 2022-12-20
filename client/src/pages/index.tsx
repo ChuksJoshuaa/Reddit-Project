@@ -22,7 +22,7 @@ import { isServer } from "../utils/isServer";
 
 const Index = () => {
   const [variables, setVariables] = useState({
-    limit: 15,
+    limit: 5,
     cursor: null as null | string,
   });
   const [{ data, fetching }] = usePostsQuery({
@@ -62,8 +62,13 @@ const Index = () => {
           <div>Loading...</div>
         ) : (
           <Stack spacing={8}>
+            <Box fontSize="xl" textTransform="lowercase" mb={0}>
+              <Button>
+                <Link href="/create-post">CreatePost</Link>
+              </Button>
+            </Box>
             {data!.posts.posts.map((item) => (
-              <Box p={3} shadow="md" borderWidth="1px" key={item.id}>
+              <Box pt={0} p={3} shadow="md" borderWidth="1px" key={item.id}>
                 <Flex
                   direction="row"
                   justify="space-between"

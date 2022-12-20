@@ -35,3 +35,30 @@ code {
     margin-right: 0.4em;
   }
 }
+
+.image-component {
+  border-radius: 50%;
+  height: 50px;
+  margin-right: 0.3em;
+}
+
+.hide-nav {
+  display: block;
+}
+.show-nav {
+  display: none;
+}
+
+@media screen and (max-width: 420px) {
+  .hide-nav {
+    display: none;
+  }
+  .show-nav {
+    display: block;
+  }
+}
+
+.forgot-component {
+  color: crimson;
+  margin-top: 1.5rem;
+}

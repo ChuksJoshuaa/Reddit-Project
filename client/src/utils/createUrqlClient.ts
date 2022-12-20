@@ -80,8 +80,12 @@ export const cursorPagination = (): Resolver => {
   };
 };
 
-export const createUrqlClient = (ssrExchange: any, ctx?: NextPageContext) => {
+export const createUrqlClient = (
+  ssrExchange: Exchange,
+  ctx?: NextPageContext
+) => {
   let cookie = "";
+
   if (isServer()) {
     cookie = ctx?.req?.headers?.cookie as string;
   }
@@ -123,7 +127,7 @@ export const createUrqlClient = (ssrExchange: any, ctx?: NextPageContext) => {
                   return;
                 }
                 const newPoints =
-                  (data.points as number) + (!data.voteStatus ? 1 : 2) * value;
+                  (data.points as number) + (!data.voteStatus ? 1 : 1) * value;
                 cache.writeFragment(
                   gql`
                     fragment __ on Post {
