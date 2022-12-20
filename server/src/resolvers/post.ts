@@ -206,6 +206,17 @@ export class PostResolver {
     @Arg("id", () => Int) id: number,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
+    //NOT CASADE WAY
+    // const post = await Post.findOne({ where: { id } });
+    // if (!post) {
+    //   return false;
+    // }
+    // if (req.session.userId !== post?.authorId) {
+    //   throw new Error("User not authorized");
+    // }
+
+    //Since the post id is a foreign key to Updoot, we need to also delete it from the Updoot table
+    // await Updoot.delete({ postId: id });
     await Post.delete({ id, authorId: req.session.userId });
     return true;
   }
