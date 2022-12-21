@@ -46,7 +46,7 @@ const EditPage = () => {
             );
             return;
           } else {
-            router.push("/");
+            router.back();
           }
         }}
       >
