@@ -191,11 +191,12 @@ export class PostResolver {
     @Arg("description", () => String, { nullable: true }) description: string,
     @Ctx() { req }: MyContext
   ): Promise<Post | null> {
+    console.log(req.session.userId);
     const result = await dataSource
       .createQueryBuilder()
       .update(Post)
       .set({ title, description })
-      .where('id = :id and "authorId = :authorId"', {
+      .where('id = :id and "authorId" = :authorId', {
         id,
         authorId: req.session.userId,
       })

@@ -142,11 +142,12 @@ let PostResolver = class PostResolver {
     }
     updatePost(id, title, description, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(req.session.userId);
             const result = yield appDataSource_1.dataSource
                 .createQueryBuilder()
                 .update(Post_1.Post)
                 .set({ title, description })
-                .where('id = :id and "authorId = :authorId"', {
+                .where('id = :id and "authorId" = :authorId', {
                 id,
                 authorId: req.session.userId,
             })
