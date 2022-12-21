@@ -24,6 +24,14 @@ const EditPage = () => {
     },
   });
 
+  if (error) {
+    return (
+      <Layout>
+        <Box textAlign="center" color="red" fontSize="1.2rem">Something went wrong</Box>
+      </Layout>
+    );
+  }
+
   const item = data?.post;
   if (!item) {
     return (
@@ -32,6 +40,7 @@ const EditPage = () => {
       </Layout>
     );
   }
+  
 
   return (
     <Layout variant="small">
