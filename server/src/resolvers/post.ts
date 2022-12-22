@@ -17,6 +17,7 @@ import {
 import { Post } from "../entities/Post";
 import { dataSource } from "../appDataSource";
 import { Updoot } from "../entities/Updoot";
+import { User } from "../entities/User";
 
 @InputType()
 class PostInput {
@@ -41,6 +42,30 @@ export class PostResolver {
     return root.description.slice(0, 100);
   }
 
+  //Get details about a particular author
+  @FieldResolver(() => User)
+  author(@Root() post: Post, @Ctx() { userLoader }: MyContext) {
+    const id = Number(post.authorId);
+    // return User.findOne({ where: { id } });
+    return userLoader.load(id);
+  }
+
+  @FieldResolver(() => Int, { nullable: true })
+  async voteStatus(
+    @Root() post: Post,
+    @Ctx() { updootLoader, req }: MyContext
+  ) {
+    if (!req.session.userId) {
+      return null;
+    }
+    const updoot = await updootLoader.load({
+      postId: Number(post.id),
+      userId: Number(req.session.userId),
+    });
+
+    return updoot ? updoot.value : null;
+  }
+
   @Mutation(() => Boolean)
   async vote(
     @Arg("postId", () => Int) postId: number,
@@ -54,9 +79,6 @@ export class PostResolver {
     const updoot = await Updoot.findOne({ where: { postId, userId } });
 
     if (updoot && updoot.value !== realValue) {
-      //if the user has voted on the post before
-      //and they are changing their vote
-
       let realValueDigit = 2 * realValue;
       await dataSource.transaction(async (tm) => {
         await tm.query(
@@ -78,7 +100,6 @@ export class PostResolver {
         );
       });
     } else if (!updoot) {
-      //has never voted before
       await dataSource.transaction(async (tm) => {
         await tm.query(
           `
@@ -104,60 +125,27 @@ export class PostResolver {
   @Query(() => PaginatedPosts)
   async posts(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
-    @Ctx() { req }: MyContext
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
     const realLimitPlusOne = realLimit + 1;
 
     const replacements: any[] = [realLimitPlusOne];
-    if (req.session.userId) {
-      replacements.push(req.session.userId);
-    }
 
-    let cursorIndex = 3;
     if (cursor) {
       replacements.push(new Date(parseInt(cursor)));
-      cursorIndex = replacements.length;
     }
 
     const posts = await dataSource.query(
       `
-        select p.*, 
-        json_build_object(
-          'id', u.id,
-          'username', u.username,
-          'email', u.email,
-          'createdAt', u."createdAt",
-          'updatedAt', u."updatedAt"
-          ) author,
-          ${
-            req.session.userId
-              ? `(select value from updoot where "userId" = $2 and "postId" = p.id) as "voteStatus"`
-              : 'null as "voteStatus"'
-          }
-        from post p
-        inner join public.user u on u.id = p."authorId"
-        ${cursor ? `where p."createdAt" < $${cursorIndex}` : ""}
+        select p.*
+        from post p    
+        ${cursor ? `where p."createdAt" < $2` : ""}
         order by p."createdAt" DESC
         limit $1    
     `,
       replacements
     );
-
-    // const qb = dataSource
-    //   .getRepository(Post)
-    //   .createQueryBuilder("p")
-    //   .leftJoinAndSelect("p.author", "u", '"u.id = p."authorId"')
-    //   .orderBy('p."createdAt"', "DESC")
-    //   .take(realLimitPlusOne);
-    // if (cursor) {
-    //   qb.where('p."createdAt" < :cursor', {
-    //     cursor: new Date(parseInt(cursor)),
-    //   });
-    // }
-
-    // const posts = await qb.getMany();
 
     return {
       posts: posts.slice(0, realLimit),
@@ -184,19 +172,26 @@ export class PostResolver {
 
   //Update Post
   @Mutation(() => Post, { nullable: true })
+  @UseMiddleware(Authenticated)
   async updatePost(
-    @Arg("id") id: number,
-    @Arg("title", () => String, { nullable: true }) title: string
+    @Arg("id", () => Int) id: number,
+    @Arg("title", () => String, { nullable: true }) title: string,
+    @Arg("description", () => String, { nullable: true }) description: string,
+    @Ctx() { req }: MyContext
   ): Promise<Post | null> {
-    const post = await Post.findOne({ where: { id } });
-    if (!post) {
-      return null;
-    }
-    if (typeof title !== "undefined") {
-      await Post.update({ id }, { title });
-    }
+    console.log(req.session.userId);
+    const result = await dataSource
+      .createQueryBuilder()
+      .update(Post)
+      .set({ title, description })
+      .where('id = :id and "authorId" = :authorId', {
+        id,
+        authorId: req.session.userId,
+      })
+      .returning("*")
+      .execute();
 
-    return post;
+    return result.raw[0];
   }
 
   //Delete Post

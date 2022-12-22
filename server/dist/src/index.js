@@ -31,6 +31,8 @@ const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const apollo_server_core_1 = require("apollo-server-core");
 const appDataSource_1 = require("./appDataSource");
+const createUserLoader_1 = require("../utils/createUserLoader");
+const createUpdootLoader_1 = require("../utils/createUpdootLoader");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield appDataSource_1.dataSource
         .initialize()
@@ -80,7 +82,13 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
             }),
         ],
-        context: ({ req, res }) => ({ req, res, redis }),
+        context: ({ req, res }) => ({
+            req,
+            res,
+            redis,
+            userLoader: (0, createUserLoader_1.createUserLoader)(),
+            updootLoader: (0, createUpdootLoader_1.createUpdootLoader)(),
+        }),
     });
     yield apolloServer.start();
     apolloServer.applyMiddleware({
