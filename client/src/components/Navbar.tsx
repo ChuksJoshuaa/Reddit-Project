@@ -7,8 +7,10 @@ import { useMeQuery, useLogoutMutation } from "../generated/graphql";
 import { LogoutDocument } from "../mutations/userMutations";
 import { imageUrl } from "../utils/image";
 import { isServer } from "../utils/isServer";
+import { useRouter } from "next/router";
 
 const Navbar = () => {
+  const router = useRouter();
   const [{ fetching: logoutFetching }, logout] = useMutation(LogoutDocument);
   // const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
 
@@ -40,6 +42,7 @@ const Navbar = () => {
         <Button
           onClick={async () => {
             await logout();
+            router.reload();
           }}
           isLoading={logoutFetching}
           fontSize="xl"

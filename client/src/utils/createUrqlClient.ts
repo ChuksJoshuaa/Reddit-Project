@@ -1,4 +1,4 @@
-import { cacheExchange, Resolver } from "@urql/exchange-graphcache";
+import { cacheExchange, Resolver, Cache } from "@urql/exchange-graphcache";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
 import {
@@ -81,6 +81,14 @@ export const cursorPagination = (): Resolver => {
   };
 };
 
+const invalidateAllPosts = (cache: Cache) => {
+  const allFields = cache.inspectFields("Query");
+  const fieldInfos = allFields.filter((info) => info.fieldName === "posts");
+  fieldInfos.forEach((item) => {
+    cache.invalidate("Query", "posts", item.arguments);
+  });
+};
+
 export const createUrqlClient = (
   ssrExchange: Exchange,
   ctx?: NextPageContext
@@ -147,13 +155,7 @@ export const createUrqlClient = (
               }
             },
             createPost: (_result, args, cache, info) => {
-              const allFields = cache.inspectFields("Query");
-              const fieldInfos = allFields.filter(
-                (info) => info.fieldName === "posts"
-              );
-              fieldInfos.forEach((item) => {
-                cache.invalidate("Query", "posts", item.arguments);
-              });
+              invalidateAllPosts(cache);
             },
             //note i used _result cuz we already have result in the betterUpdateQuery function
             login: (_result, args, cache, info) => {
@@ -171,6 +173,8 @@ export const createUrqlClient = (
                   }
                 }
               );
+
+              invalidateAllPosts(cache);
             },
 
             //Update cache when user logout
