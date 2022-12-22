@@ -17,6 +17,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { dataSource } from "./appDataSource";
+import { createUserLoader } from "../utils/createUserLoader";
+import { createUpdootLoader } from "../utils/createUpdootLoader";
 
 const main = async () => {
   await dataSource
@@ -82,7 +84,13 @@ const main = async () => {
         },
       }),
     ],
-    context: ({ req, res }) => ({ req, res, redis }),
+    context: ({ req, res }) => ({
+      req,
+      res,
+      redis,
+      userLoader: createUserLoader(),
+      updootLoader: createUpdootLoader(),
+    }),
   });
 
   await apolloServer.start();
