@@ -5,12 +5,17 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
+    "build":"tsc -p .",
+    "dev": "node ./dist/src/index.js",
     "dev1": "nodemon dist/index.js",
-    "start": "node dist/index.js",
+    "start": "node ./dist/src/index.js",
     "start1": "ts-node src/index.ts",
+    "start2": "vercel dev",
     "dev2": "nodemon --exec ts-node src/index.ts",
     "create:migration": "mikro-orm migration:create",
-    "fresh:migration": "mikro-orm migration:fresh"
+    "fresh:migration": "mikro-orm migration:fresh",
+    "deploy" : "vercel deploy --prod",
+    "prod": "node ./dist/src/index.js"
   },
   "keywords": [],
   "author": "",
