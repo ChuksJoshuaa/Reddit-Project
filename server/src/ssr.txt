@@ -3,3 +3,45 @@ ssr
 
 client side  
   browser -> graphql api
+
+
+
+GEN-ENV
+First, install this npm i gen-env-types
+
+in my package.json folder, I added a gen-env; once you run that 
+command, a .env.d.ts folder will be created with a .env.example 
+folder. Note; always use the dotenv-safe/config.
+
+so once you start the server and a single .env key is missing, it
+will surely notify
+
+
+For more information. Read on https://www.npmjs.com/package/gen-env-types
+
+
+FOR example
+.env folder:
+SESSION_SECRET=asdjpfowqip
+STRIPE_ACCESS_TOKEN=qoi120wqe
+
+.env.d.ts folder: 
+declare namespace NodeJS {
+  export interface ProcessEnv {
+    SESSION_SECRET: string;
+    STRIPE_ACCESS_TOKEN: string;
+  }
+}
+
+.env.example folder: 
+SESSION_SECRET=
+STRIPE_ACCESS_TOKEN=
+
+
+Include the generated file in your tsconfig.json if not already:
+{
+  "include": [
+    "./env.d.ts"
+  ]
+}
+

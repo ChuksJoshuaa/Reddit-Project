@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "gen-env": "npx gen-env-types .env -o src/env.d.ts -e .",
     "watch": "tsc -w",
     "build":"tsc -p .",
     "dev": "node ./dist/src/index.js",
