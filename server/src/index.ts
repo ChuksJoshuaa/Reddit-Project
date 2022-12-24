@@ -28,7 +28,7 @@ const main = async () => {
     })
     .catch((error) => console.log(error));
 
-  dataSource.runMigrations();
+  // dataSource.runMigrations();
 
   const PORT = process.env.PORT || 5000;
   const secret_key = process.env.SESSION_SECRET;
