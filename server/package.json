@@ -16,7 +16,11 @@
     "create:migration": "mikro-orm migration:create",
     "fresh:migration": "mikro-orm migration:fresh",
     "deploy" : "vercel deploy --prod",
-    "prod": "node ./dist/src/index.js"
+    "prod": "node ./dist/src/index.js",
+    "generate:migration": "typeorm migration:generate -d dist/src/appDataSource.js",
+    "fake:migration": "typeorm migration:run -d dist/src/appDataSource.js",
+    "new:migration": "typeorm migration:create -d dist/src/appDataSource.js",
+    "typeorm": "typeorm-ts-node-commonjs"
   },
   "keywords": [],
   "author": "",

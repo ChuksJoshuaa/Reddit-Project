@@ -27,7 +27,7 @@ const main = async () => {
     })
     .catch((error) => console.log(error));
 
-  // dataSource.runMigrations();
+  dataSource.runMigrations();
 
   const PORT = process.env.PORT || 5000;
   const secret_key = process.env.SESSION_SECRET as string;
@@ -36,8 +36,8 @@ const main = async () => {
 
   app.use(cookieParser());
 
-  const redis = new Redis(process.env.REDIS_URL as any);
-
+  const redis = new Redis(process.env.REDIS_URL as string);
+  app.set("proxy", 1);
   app.use(
     cors({
       origin: __prod__
@@ -60,6 +60,7 @@ const main = async () => {
         httpOnly: __prod__,
         sameSite: "lax",
         secure: __prod__,
+        domain: __prod__ ? ".netlify.app" : undefined,
       },
       saveUninitialized: false,
       resave: false,
