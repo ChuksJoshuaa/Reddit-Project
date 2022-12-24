@@ -10,8 +10,8 @@ import {
   OneToMany,
 } from "typeorm";
 
-import { User } from "./User";
-import { Updoot } from "./Updoot";
+import { User } from "./User.entity";
+import { Updoot } from "./Updoot.entity";
 @ObjectType()
 @Entity()
 export class Post extends BaseEntity {

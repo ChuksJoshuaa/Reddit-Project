@@ -14,10 +14,10 @@ import {
   Root,
   ObjectType,
 } from "type-graphql";
-import { Post } from "../entities/Post";
+import { Post } from "../entities/Post.entity";
 import { dataSource } from "../appDataSource";
-import { Updoot } from "../entities/Updoot";
-import { User } from "../entities/User";
+import { Updoot } from "../entities/Updoot.entity";
+import { User } from "../entities/User.entity";
 
 @InputType()
 class PostInput {

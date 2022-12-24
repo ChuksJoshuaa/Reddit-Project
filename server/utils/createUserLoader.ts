@@ -1,6 +1,6 @@
 import DataLoader from "dataloader";
 import { In } from "typeorm";
-import { User } from "../src/entities/User";
+import { User } from "../src/entities/User.entity";
 export const createUserLoader = () =>
   new DataLoader<number, User>(async (userIds) => {
     const users = await User.findBy({ id: In(userIds as number[]) });

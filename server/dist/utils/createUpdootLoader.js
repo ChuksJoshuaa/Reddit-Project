@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUpdootLoader = void 0;
 const dataloader_1 = __importDefault(require("dataloader"));
-const Updoot_1 = require("../src/entities/Updoot");
+const Updoot_entity_1 = require("../src/entities/Updoot.entity");
 const createUpdootLoader = () => new dataloader_1.default((keys) => __awaiter(void 0, void 0, void 0, function* () {
-    const updoots = yield Updoot_1.Updoot.findByIds(keys);
+    const updoots = yield Updoot_entity_1.Updoot.findByIds(keys);
     const updootIdsToUpdoot = {};
     updoots.forEach((updoot) => {
         updootIdsToUpdoot[`${updoot.userId}| ${updoot.postId}`] = updoot;

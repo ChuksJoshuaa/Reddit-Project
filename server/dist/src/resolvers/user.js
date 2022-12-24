@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserResolver = void 0;
 const type_graphql_1 = require("type-graphql");
-const User_1 = require("../entities/User");
+const User_entity_1 = require("../entities/User.entity");
 const argon2_1 = __importDefault(require("argon2"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -56,8 +56,8 @@ __decorate([
     __metadata("design:type", Array)
 ], UserResponse.prototype, "errors", void 0);
 __decorate([
-    (0, type_graphql_1.Field)(() => User_1.User, { nullable: true }),
-    __metadata("design:type", User_1.User)
+    (0, type_graphql_1.Field)(() => User_entity_1.User, { nullable: true }),
+    __metadata("design:type", User_entity_1.User)
 ], UserResponse.prototype, "user", void 0);
 UserResponse = __decorate([
     (0, type_graphql_1.ObjectType)()
@@ -71,7 +71,7 @@ let UserResolver = class UserResolver {
     }
     users() {
         return __awaiter(this, void 0, void 0, function* () {
-            return User_1.User.find({});
+            return User_entity_1.User.find({});
         });
     }
     changePassword(token, newPassword, { redis, req }) {
@@ -99,7 +99,7 @@ let UserResolver = class UserResolver {
                 };
             }
             let myUserId = parseInt(userId);
-            const user = yield User_1.User.findOne({ where: { id: myUserId } });
+            const user = yield User_entity_1.User.findOne({ where: { id: myUserId } });
             if (!user) {
                 return {
                     errors: [
@@ -121,7 +121,7 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
-            yield User_1.User.update({ id: myUserId }, { password: yield argon2_1.default.hash(newPassword) });
+            yield User_entity_1.User.update({ id: myUserId }, { password: yield argon2_1.default.hash(newPassword) });
             yield redis.del(redisKey);
             req.session.userId = user.id;
             return { user };
@@ -129,7 +129,7 @@ let UserResolver = class UserResolver {
     }
     forgotPassword(email, { redis }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield User_1.User.findOne({ where: { email: email } });
+            const user = yield User_entity_1.User.findOne({ where: { email: email } });
             if (user === null || user === undefined || !user) {
                 return false;
             }
@@ -145,7 +145,7 @@ let UserResolver = class UserResolver {
         if (!req.session.userId) {
             return null;
         }
-        return User_1.User.findOne({ where: { id: req.session.userId } });
+        return User_entity_1.User.findOne({ where: { id: req.session.userId } });
     }
     register(options, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -159,7 +159,7 @@ let UserResolver = class UserResolver {
                 const result = yield appDataSource_1.dataSource
                     .createQueryBuilder()
                     .insert()
-                    .into(User_1.User)
+                    .into(User_entity_1.User)
                     .values({
                     username: options.username,
                     password: hashedPassword,
@@ -200,7 +200,7 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
-            const user = yield User_1.User.findOne({ where: { email } });
+            const user = yield User_entity_1.User.findOne({ where: { email } });
             if (user === null || user === undefined || !user) {
                 return {
                     errors: [
@@ -245,11 +245,11 @@ __decorate([
     __param(0, (0, type_graphql_1.Root)()),
     __param(1, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [User_1.User, Object]),
+    __metadata("design:paramtypes", [User_entity_1.User, Object]),
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "email", null);
 __decorate([
-    (0, type_graphql_1.Query)(() => [User_1.User]),
+    (0, type_graphql_1.Query)(() => [User_entity_1.User]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
@@ -272,7 +272,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "forgotPassword", null);
 __decorate([
-    (0, type_graphql_1.Query)(() => User_1.User, { nullable: true }),
+    (0, type_graphql_1.Query)(() => User_entity_1.User, { nullable: true }),
     __param(0, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -303,7 +303,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "logout", null);
 UserResolver = __decorate([
-    (0, type_graphql_1.Resolver)(User_1.User)
+    (0, type_graphql_1.Resolver)(User_entity_1.User)
 ], UserResolver);
 exports.UserResolver = UserResolver;
 //# sourceMappingURL=user.js.map
