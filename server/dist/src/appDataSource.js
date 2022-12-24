@@ -17,6 +17,7 @@ exports.dataSource = new typeorm_1.DataSource({
     type: "postgres",
     port: portNumber,
     url: process.env.DATABASE_URL,
+    ssl: true,
     synchronize: !constant_1.__prod__,
     logging: !constant_1.__prod__,
     migrations: [path_1.default.join(__dirname, "./migrations/*")],

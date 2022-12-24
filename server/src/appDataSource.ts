@@ -13,6 +13,7 @@ export const dataSource = new DataSource({
   type: "postgres",
   port: portNumber,
   url: process.env.DATABASE_URL,
+  ssl: true,
   synchronize: !__prod__,
   logging: !__prod__,
   migrations: [path.join(__dirname, "./migrations/*")],
