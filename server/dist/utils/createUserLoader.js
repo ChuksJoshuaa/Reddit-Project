@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUserLoader = void 0;
 const dataloader_1 = __importDefault(require("dataloader"));
 const typeorm_1 = require("typeorm");
-const User_1 = require("../src/entities/User");
+const User_entity_1 = require("../src/entities/User.entity");
 const createUserLoader = () => new dataloader_1.default((userIds) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield User_1.User.findBy({ id: (0, typeorm_1.In)(userIds) });
+    const users = yield User_entity_1.User.findBy({ id: (0, typeorm_1.In)(userIds) });
     const userIdToUser = {};
     users.forEach((u) => {
         userIdToUser[u.id] = u;

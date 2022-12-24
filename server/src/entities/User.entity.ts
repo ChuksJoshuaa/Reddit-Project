@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Post } from "./Post";
-import { Updoot } from "./Updoot";
+import { Post } from "./Post.entity";
+import { Updoot } from "./Updoot.entity";
 
 @ObjectType()
 @Entity()

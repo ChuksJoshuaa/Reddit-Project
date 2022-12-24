@@ -1,8 +1,8 @@
 import { ObjectType, Field } from "type-graphql";
 import { BaseEntity, Entity, ManyToOne, PrimaryColumn, Column } from "typeorm";
-import { Post } from "./Post";
+import { Post } from "./Post.entity";
 
-import { User } from "./User";
+import { User } from "./User.entity";
 @ObjectType()
 @Entity()
 export class Updoot extends BaseEntity {
