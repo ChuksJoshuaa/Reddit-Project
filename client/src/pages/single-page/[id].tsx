@@ -28,9 +28,9 @@ const SinglePage = () => {
   const item = data?.post;
   if (!item) {
     return (
-      <>
+      <Layout>
         <Loaders />
-      </>
+      </Layout>
     );
   }
   return (
