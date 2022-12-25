@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { Layout, InputField, TextField } from "../../components";
 import { usePostQuery, useUpdatePostMutation } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
+import { getUser } from "../../utils/getLocalStorage";
 
 const EditPage = () => {
   const [, updatePost] = useUpdatePostMutation();
@@ -27,7 +28,9 @@ const EditPage = () => {
   if (error) {
     return (
       <Layout>
-        <Box textAlign="center" color="red" fontSize="1.2rem">Something went wrong</Box>
+        <Box textAlign="center" color="red" fontSize="1.2rem">
+          Something went wrong
+        </Box>
       </Layout>
     );
   }
@@ -40,15 +43,20 @@ const EditPage = () => {
       </Layout>
     );
   }
-  
+
+  let userId = getUser().userId;
+  const authorId = Number(userId);
 
   return (
     <Layout variant="small">
       <Formik
-        initialValues={{ title: item?.title, description: item?.description }}
+        initialValues={{
+          authorId,
+          title: item?.title,
+          description: item?.description,
+        }}
         onSubmit={async (values) => {
           const response = await updatePost({ ...values, id: result });
-          console.log(response);
           if (response.data?.updatePost === null) {
             setErrorMessage(
               "You cannot update this post due to some issues, Please try again!!!"

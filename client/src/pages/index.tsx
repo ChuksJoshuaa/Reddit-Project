@@ -14,13 +14,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { Loaders, Navbar, Updoot } from "../components";
-import {
-  useDeletePostMutation,
-  useMeQuery,
-  usePostsQuery,
-} from "../generated/graphql";
+import EditDeleteButton from "../components/EditDeleteButton";
+import { useDeletePostMutation, usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { itemProps, postsDataTypes } from "../utils/dataTypes";
+import { getUser } from "../utils/getLocalStorage";
 import { isServer } from "../utils/isServer";
 
 const Index = () => {
@@ -31,10 +29,6 @@ const Index = () => {
   });
   const [{ data, fetching }] = usePostsQuery({
     variables,
-  });
-
-  const [{ data: meData }] = useMeQuery({
-    pause: isServer() as any,
   });
 
   if (!fetching && !data) {
@@ -53,6 +47,9 @@ const Index = () => {
       cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
     });
   };
+
+  let userId = getUser().userId;
+  const authorId = Number(userId);
 
   return (
     <>
@@ -116,29 +113,12 @@ const Index = () => {
                       </Button>
                     </Box>
                   </Flex>
-                  {meData?.me?.id === item?.author?.id ? (
-                    <Flex justify="flex-end" alignItems="center">
-                      <Box style={{ visibility: "hidden" }}>.</Box>
-                      <Flex
-                        justify="flex-start"
-                        alignItems="center"
-                        direction="row"
-                      >
-                        <Link href={`/edit-page/${item?.id}`}>
-                          <EditIcon w={6} h={6} color="blue.500" mx={2} />
-                        </Link>
-                        <DeleteIcon
-                          w={6}
-                          h={6}
-                          color="red.500"
-                          onClick={() =>
-                            deletePost({
-                              id: item?.id,
-                            })
-                          }
-                        />
-                      </Flex>
-                    </Flex>
+                  {authorId === item?.author?.id ? (
+                    <EditDeleteButton
+                      id={item?.id}
+                      authorId={item?.author?.id}
+                      check={false}
+                    />
                   ) : null}
                 </Box>
               )

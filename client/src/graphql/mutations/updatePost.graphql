@@ -1,5 +1,15 @@
-mutation UpdatePost($id: Int!, $title: String!, $description: String!) {
-  updatePost(id: $id, title: $title, description: $description) {
+mutation UpdatePost(
+  $id: Int!
+  $authorId: Int!
+  $title: String!
+  $description: String!
+) {
+  updatePost(
+    id: $id
+    authorId: $authorId
+    title: $title
+    description: $description
+  ) {
     id
     title
     description

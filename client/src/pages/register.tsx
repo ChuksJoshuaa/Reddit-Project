@@ -21,6 +21,12 @@ const Register = () => {
           if (response.data?.register.errors) {
             setErrors(toErrorMap(response.data?.register.errors));
           } else if (response.data?.register.user) {
+            let userName = response?.data?.register?.user?.username;
+            let userId = response?.data?.register?.user?.id;
+            localStorage.setItem(
+              "profile",
+              JSON.stringify({ userName, userId })
+            );
             Router.push("/");
           }
         }}

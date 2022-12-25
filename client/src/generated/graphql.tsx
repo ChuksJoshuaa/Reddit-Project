@@ -47,6 +47,7 @@ export type MutationCreatePostArgs = {
 
 
 export type MutationDeletePostArgs = {
+  authorId: Scalars['Int'];
   id: Scalars['Int'];
 };
 
@@ -68,6 +69,7 @@ export type MutationRegisterArgs = {
 
 
 export type MutationUpdatePostArgs = {
+  authorId: Scalars['Int'];
   description?: InputMaybe<Scalars['String']>;
   id: Scalars['Int'];
   title?: InputMaybe<Scalars['String']>;
@@ -100,6 +102,7 @@ export type Post = {
 };
 
 export type PostInput = {
+  authorId: Scalars['Float'];
   description: Scalars['String'];
   title: Scalars['String'];
 };
@@ -170,6 +173,7 @@ export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __type
 
 export type DeletePostMutationVariables = Exact<{
   id: Scalars['Int'];
+  authorId: Scalars['Int'];
 }>;
 
 
@@ -206,6 +210,7 @@ export type RegisterMutation = { __typename?: 'Mutation', register: { __typename
 
 export type UpdatePostMutationVariables = Exact<{
   id: Scalars['Int'];
+  authorId: Scalars['Int'];
   title: Scalars['String'];
   description: Scalars['String'];
 }>;
@@ -298,8 +303,8 @@ export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
 };
 export const DeletePostDocument = gql`
-    mutation DeletePost($id: Int!) {
-  deletePost(id: $id)
+    mutation DeletePost($id: Int!, $authorId: Int!) {
+  deletePost(id: $id, authorId: $authorId)
 }
     `;
 
@@ -353,8 +358,13 @@ export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
 export const UpdatePostDocument = gql`
-    mutation UpdatePost($id: Int!, $title: String!, $description: String!) {
-  updatePost(id: $id, title: $title, description: $description) {
+    mutation UpdatePost($id: Int!, $authorId: Int!, $title: String!, $description: String!) {
+  updatePost(
+    id: $id
+    authorId: $authorId
+    title: $title
+    description: $description
+  ) {
     id
     title
     description

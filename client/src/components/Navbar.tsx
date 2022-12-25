@@ -5,12 +5,16 @@ import { FaAlignJustify, FaUser } from "react-icons/fa";
 import { useMutation } from "urql";
 import { useMeQuery } from "../generated/graphql";
 import { LogoutDocument } from "../mutations/userMutations";
+import { getUser } from "../utils/getLocalStorage";
 import { imageUrl } from "../utils/image";
 import { isServer } from "../utils/isServer";
 
 const Navbar = () => {
   const router = useRouter();
   const [{ fetching: logoutFetching }, logout] = useMutation(LogoutDocument);
+
+  const checkUser = Object.keys(getUser()).length;
+  const userName = getUser()?.userName;
 
   const [{ data, fetching }] = useMeQuery({
     pause: isServer() as any,
@@ -19,7 +23,7 @@ const Navbar = () => {
   let body = null;
 
   if (fetching) {
-  } else if (!data?.me) {
+  } else if (!data?.me && checkUser === 0) {
     body = (
       <Box fontSize="xl" mt={1} pr={5}>
         <Button colorScheme="teal" size="md" textTransform="lowercase" mr={2}>
@@ -35,11 +39,12 @@ const Navbar = () => {
       <Flex alignItems="center" mt={1} pr={5}>
         <Icon as={FaUser} boxSize={4} mr={1}></Icon>
         <Box mr={2} fontSize="xl" textTransform="lowercase">
-          {data.me.username}
+          {userName}
         </Box>
         <Button
           onClick={async () => {
             await logout();
+            localStorage.clear();
             router.reload();
           }}
           isLoading={logoutFetching}

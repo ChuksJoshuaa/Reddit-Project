@@ -1,8 +1,9 @@
-import { Box, Button, Divider } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Layout, Loaders } from "../../components";
+import EditDeleteButton from "../../components/EditDeleteButton";
 import { usePostQuery } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 
@@ -55,9 +56,17 @@ const SinglePage = () => {
         <Divider />
         <Box p={2}>{item?.description}</Box>
 
-        <Button m={3} colorScheme="teal">
-          <Link href={`/`}>Go Back</Link>
-        </Button>
+        <Flex justify="space-between" pr={3}>
+          <Button m={3} colorScheme="teal">
+            <Link href={`/`}>Go Back</Link>
+          </Button>
+
+          <EditDeleteButton
+            id={item?.id}
+            authorId={item?.authorId}
+            check={true}
+          />
+        </Flex>
       </Box>
     </Layout>
   );

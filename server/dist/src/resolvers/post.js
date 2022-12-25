@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostResolver = void 0;
-const Authenticated_1 = require("../middleware/Authenticated");
 const type_graphql_1 = require("type-graphql");
 const Post_entity_1 = require("../entities/Post.entity");
 const appDataSource_1 = require("../appDataSource");
@@ -38,6 +37,10 @@ __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
 ], PostInput.prototype, "description", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", Number)
+], PostInput.prototype, "authorId", void 0);
 PostInput = __decorate([
     (0, type_graphql_1.InputType)()
 ], PostInput);
@@ -138,28 +141,38 @@ let PostResolver = class PostResolver {
     createPost(input, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             let authorUserId = req.session.userId;
+            if (!authorUserId || authorUserId === undefined || authorUserId === null) {
+                authorUserId = Number(input.authorId);
+            }
             return Post_entity_1.Post.create(Object.assign(Object.assign({}, input), { authorId: authorUserId })).save();
         });
     }
-    updatePost(id, title, description, { req }) {
+    updatePost(id, authorId, title, description, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(req.session.userId);
+            let authorUserId = req.session.userId;
+            if (!authorUserId || authorUserId === undefined || authorUserId === null) {
+                authorUserId = authorId;
+            }
             const result = yield appDataSource_1.dataSource
                 .createQueryBuilder()
                 .update(Post_entity_1.Post)
                 .set({ title, description })
                 .where('id = :id and "authorId" = :authorId', {
                 id,
-                authorId: req.session.userId,
+                authorId: authorUserId,
             })
                 .returning("*")
                 .execute();
             return result.raw[0];
         });
     }
-    deletePost(id, { req }) {
+    deletePost(id, authorId, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield Post_entity_1.Post.delete({ id, authorId: req.session.userId });
+            let authorUserId = req.session.userId;
+            if (!authorUserId || authorUserId === undefined || authorUserId === null) {
+                authorUserId = authorId;
+            }
+            yield Post_entity_1.Post.delete({ id, authorId: authorUserId });
             return true;
         });
     }
@@ -213,7 +226,6 @@ __decorate([
 ], PostResolver.prototype, "post", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => Post_entity_1.Post),
-    (0, type_graphql_1.UseMiddleware)(Authenticated_1.Authenticated),
     __param(0, (0, type_graphql_1.Arg)("input")),
     __param(1, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
@@ -222,22 +234,22 @@ __decorate([
 ], PostResolver.prototype, "createPost", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => Post_entity_1.Post, { nullable: true }),
-    (0, type_graphql_1.UseMiddleware)(Authenticated_1.Authenticated),
     __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.Int)),
-    __param(1, (0, type_graphql_1.Arg)("title", () => String, { nullable: true })),
-    __param(2, (0, type_graphql_1.Arg)("description", () => String, { nullable: true })),
-    __param(3, (0, type_graphql_1.Ctx)()),
+    __param(1, (0, type_graphql_1.Arg)("authorId", () => type_graphql_1.Int)),
+    __param(2, (0, type_graphql_1.Arg)("title", () => String, { nullable: true })),
+    __param(3, (0, type_graphql_1.Arg)("description", () => String, { nullable: true })),
+    __param(4, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String, String, Object]),
+    __metadata("design:paramtypes", [Number, Number, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "updatePost", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => Boolean),
-    (0, type_graphql_1.UseMiddleware)(Authenticated_1.Authenticated),
     __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.Int)),
-    __param(1, (0, type_graphql_1.Ctx)()),
+    __param(1, (0, type_graphql_1.Arg)("authorId", () => type_graphql_1.Int)),
+    __param(2, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [Number, Number, Object]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "deletePost", null);
 PostResolver = __decorate([

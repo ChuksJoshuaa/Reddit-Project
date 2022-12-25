@@ -1,4 +1,4 @@
-import { Authenticated } from "../middleware/Authenticated";
+// import { Authenticated } from "../middleware/Authenticated";
 import { MyContext } from "src/types";
 import {
   Resolver,
@@ -8,7 +8,7 @@ import {
   InputType,
   Field,
   Ctx,
-  UseMiddleware,
+  // UseMiddleware,
   Int,
   FieldResolver,
   Root,
@@ -25,6 +25,8 @@ class PostInput {
   title: string;
   @Field()
   description: string;
+  @Field()
+  authorId: number;
 }
 
 @ObjectType()
@@ -159,32 +161,39 @@ export class PostResolver {
 
   //Create Post
   @Mutation(() => Post)
-  @UseMiddleware(Authenticated)
+  // @UseMiddleware(Authenticated)
   async createPost(
     @Arg("input") input: PostInput,
     @Ctx() { req }: MyContext
   ): Promise<Post> {
     let authorUserId = req.session.userId;
+    if (!authorUserId || authorUserId === undefined || authorUserId === null) {
+      authorUserId = Number(input.authorId);
+    }
     return Post.create({ ...input, authorId: authorUserId }).save();
   }
 
   //Update Post
   @Mutation(() => Post, { nullable: true })
-  @UseMiddleware(Authenticated)
+  // @UseMiddleware(Authenticated)
   async updatePost(
     @Arg("id", () => Int) id: number,
+    @Arg("authorId", () => Int) authorId: number,
     @Arg("title", () => String, { nullable: true }) title: string,
     @Arg("description", () => String, { nullable: true }) description: string,
     @Ctx() { req }: MyContext
   ): Promise<Post | null> {
-    console.log(req.session.userId);
+    let authorUserId = req.session.userId;
+    if (!authorUserId || authorUserId === undefined || authorUserId === null) {
+      authorUserId = authorId;
+    }
     const result = await dataSource
       .createQueryBuilder()
       .update(Post)
       .set({ title, description })
       .where('id = :id and "authorId" = :authorId', {
         id,
-        authorId: req.session.userId,
+        authorId: authorUserId,
       })
       .returning("*")
       .execute();
@@ -194,12 +203,17 @@ export class PostResolver {
 
   //Delete Post
   @Mutation(() => Boolean)
-  @UseMiddleware(Authenticated)
+  // @UseMiddleware(Authenticated)
   async deletePost(
     @Arg("id", () => Int) id: number,
+    @Arg("authorId", () => Int) authorId: number,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
-    await Post.delete({ id, authorId: req.session.userId });
+    let authorUserId = req.session.userId;
+    if (!authorUserId || authorUserId === undefined || authorUserId === null) {
+      authorUserId = authorId;
+    }
+    await Post.delete({ id, authorId: authorUserId });
     return true;
   }
 }

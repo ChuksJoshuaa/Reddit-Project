@@ -21,6 +21,12 @@ const Login = () => {
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data?.login.errors));
           } else if (response.data?.login.user) {
+            let userName = response?.data?.login?.user?.username;
+            let userId = response?.data?.login?.user?.id;
+            localStorage.setItem(
+              "profile",
+              JSON.stringify({ userName, userId })
+            );
             if (typeof router.query.next === "string") {
               router.push(router.query.next);
             } else {

@@ -6,6 +6,7 @@ import React from "react";
 import { InputField, Layout, TextField } from "../components";
 import { useCreatePostMutation } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
+import { getUser } from "../utils/getLocalStorage";
 import { useIsAuth } from "../utils/useIsAuth";
 
 const CreatePost = () => {
@@ -15,10 +16,13 @@ const CreatePost = () => {
   //check if the user is logged in
   useIsAuth();
 
+  let userId = getUser().userId;
+  const authorId = Number(userId);
+
   return (
     <Layout variant="small">
       <Formik
-        initialValues={{ title: "", description: "" }}
+        initialValues={{ authorId, title: "", description: "" }}
         onSubmit={async (values) => {
           const response = await createPost({ input: values });
           if (response.error) {
