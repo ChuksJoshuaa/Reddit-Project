@@ -2,7 +2,7 @@ import { Box, Button, Divider } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Layout } from "../../components";
+import { Layout, Loaders } from "../../components";
 import { usePostQuery } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 
@@ -28,9 +28,9 @@ const SinglePage = () => {
   const item = data?.post;
   if (!item) {
     return (
-      <Layout>
-        <Box>Loading....</Box>
-      </Layout>
+      <>
+        <Loaders />
+      </>
     );
   }
   return (
