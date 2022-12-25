@@ -46,9 +46,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const redis = new ioredis_1.default(process.env.REDIS_URL);
     app.set("proxy", 1);
     app.use((0, cors_1.default)({
-        origin: constant_1.__prod__
-            ? process.env.CORS_ORIGIN
-            : process.env.CORS_LOCAL_ORIGIN,
+        origin: process.env.CORS_ORIGIN,
         credentials: true,
     }));
     app.use((0, express_session_1.default)({
