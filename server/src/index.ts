@@ -12,7 +12,6 @@ import Redis from "ioredis";
 import connectRedis from "connect-redis";
 import session from "express-session";
 const RedisStore = connectRedis(session);
-import "dotenv-safe/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
@@ -31,26 +30,24 @@ const main = async () => {
   // dataSource.runMigrations();
 
   const PORT = process.env.PORT || 5000;
-  const secret_key = process.env.SESSION_SECRET;
+  const secret_key = process.env.SESSION_SECRET as string;
 
   const app = express();
 
   app.use(cookieParser());
 
-  const redis = new Redis(process.env.REDIS_URL as any);
+  const redis = new Redis(process.env.REDIS_URL as string);
 
   app.use(
     cors({
-      origin: __prod__
-        ? process.env.CORS_ORIGIN
-        : process.env.CORS_LOCAL_ORIGIN,
+      origin:process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
 
   app.use(
     session({
-      secret: secret_key || "",
+      secret: secret_key,
       name: COOKIE_NAME,
       store: new RedisStore({
         client: redis as any,
