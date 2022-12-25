@@ -22,7 +22,6 @@ const Login = () => {
             setErrors(toErrorMap(response.data?.login.errors));
           } else if (response.data?.login.user) {
             if (typeof router.query.next === "string") {
-              //redirect user to the initial next page
               router.push(router.query.next);
             } else {
               router.push("/");

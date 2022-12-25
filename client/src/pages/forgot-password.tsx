@@ -6,9 +6,7 @@ import { Wrapper, InputField } from "../components";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { useForgotPasswordMutation } from "../generated/graphql";
 
-interface IProps {}
-
-const ForgotPassword: React.FC<IProps> = ({}) => {
+const ForgotPassword = () => {
   const [, forgotPassword] = useForgotPasswordMutation();
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState(false);

@@ -42,11 +42,9 @@ export class PostResolver {
     return root.description.slice(0, 100);
   }
 
-  //Get details about a particular author
   @FieldResolver(() => User)
   author(@Root() post: Post, @Ctx() { userLoader }: MyContext) {
     const id = Number(post.authorId);
-    // return User.findOne({ where: { id } });
     return userLoader.load(id);
   }
 

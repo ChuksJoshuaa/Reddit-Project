@@ -1,18 +1,16 @@
 import { Box, Button, Flex, Icon } from "@chakra-ui/react";
 import Link from "next/link";
-import React from "react";
-import { FaUser, FaAlignJustify } from "react-icons/fa";
+import { useRouter } from "next/router";
+import { FaAlignJustify, FaUser } from "react-icons/fa";
 import { useMutation } from "urql";
-import { useMeQuery, useLogoutMutation } from "../generated/graphql";
+import { useMeQuery } from "../generated/graphql";
 import { LogoutDocument } from "../mutations/userMutations";
 import { imageUrl } from "../utils/image";
 import { isServer } from "../utils/isServer";
-import { useRouter } from "next/router";
 
 const Navbar = () => {
   const router = useRouter();
   const [{ fetching: logoutFetching }, logout] = useMutation(LogoutDocument);
-  // const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
 
   const [{ data, fetching }] = useMeQuery({
     pause: isServer() as any,

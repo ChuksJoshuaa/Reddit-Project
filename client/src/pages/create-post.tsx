@@ -8,9 +8,7 @@ import { useCreatePostMutation } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { useIsAuth } from "../utils/useIsAuth";
 
-interface IProps {}
-
-const CreatePost: React.FC<IProps> = ({}) => {
+const CreatePost = () => {
   const [, createPost] = useCreatePostMutation();
   const router = useRouter();
 
@@ -23,7 +21,6 @@ const CreatePost: React.FC<IProps> = ({}) => {
         initialValues={{ title: "", description: "" }}
         onSubmit={async (values) => {
           const response = await createPost({ input: values });
-          console.log(response);
           if (response.error) {
             const errorType = response.error?.graphQLErrors;
             for (let err of errorType) {

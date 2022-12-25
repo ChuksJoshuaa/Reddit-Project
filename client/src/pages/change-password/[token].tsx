@@ -19,7 +19,6 @@ const ChangePassword: NextPage<IProps> = () => {
   const router = useRouter();
   const [tokenError, setTokenError] = useState("");
 
-  //We can use router.query to get the token instead of the getInitialProps where we pass the token props as a parameter
   const tokenQuery = router.query.token;
 
   return (

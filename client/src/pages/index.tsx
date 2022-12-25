@@ -20,9 +20,8 @@ import {
   usePostsQuery,
 } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { itemProps, itemSingleProps, postsDataTypes } from "../utils/dataTypes";
+import { itemProps, postsDataTypes } from "../utils/dataTypes";
 import { isServer } from "../utils/isServer";
-// import { ReqChecker } from "../utils/reqCheck";
 
 const Index = () => {
   const [, deletePost] = useDeletePostMutation();
