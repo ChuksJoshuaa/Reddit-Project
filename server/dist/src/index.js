@@ -61,7 +61,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             httpOnly: constant_1.__prod__,
             sameSite: "lax",
             secure: constant_1.__prod__,
-            domain: constant_1.__prod__ ? ".netlify.app" : undefined,
+            domain: constant_1.__prod__ ? ".vercel.app" : undefined,
         },
         saveUninitialized: false,
         resave: false,

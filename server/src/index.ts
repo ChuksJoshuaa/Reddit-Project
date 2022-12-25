@@ -59,7 +59,7 @@ const main = async () => {
         httpOnly: __prod__,
         sameSite: "lax",
         secure: __prod__,
-        domain: __prod__ ? ".netlify.app" : undefined,
+        domain: __prod__ ? ".vercel.app" : undefined,
       },
       saveUninitialized: false,
       resave: false,
