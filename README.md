@@ -78,6 +78,39 @@ mutation CreatePost($input: PostInput!) {
 
 ```
 
+### Update a post
+
+```
+mutation UpdatePost(
+  $id: Int!
+  $authorId: Int!
+  $title: String!
+  $description: String!
+) {
+  updatePost(
+    id: $id
+    authorId: $authorId
+    title: $title
+    description: $description
+  ) {
+    id
+    title
+    description
+    descriptionSnippet
+  }
+}
+
+```
+
+### Delete Post
+
+```
+mutation DeletePost($id: Int!, $authorId: Int!) {
+  deletePost(id: $id, authorId: $authorId)
+}
+
+```
+
 ### Login
 
 ```
@@ -121,6 +154,15 @@ mutation Register($email: String!, $username: String!, $password: String!) {
 
 ```
 
+### Logout
+
+```
+mutation Logout {
+  logout
+}
+
+```
+
 ### vote
 
 ```
@@ -135,24 +177,6 @@ mutation Vote($value: Int!, $postId: Int!) {
 ```
 mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)
-}
-
-```
-
-### Logout
-
-```
-mutation Logout {
-  logout
-}
-
-```
-
-### Delete Post
-
-```
-mutation DeletePost($id: Int!) {
-  deletePost(id: $id)
 }
 
 ```
@@ -175,4 +199,3 @@ mutation ChangePassword($token: String!, $newPassword: String!) {
 }
 
 ```
-
