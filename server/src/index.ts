@@ -83,6 +83,7 @@ const main = async () => {
         },
       }),
     ],
+    introspection: __prod__,
     context: ({ req, res }) => ({
       req,
       res,
