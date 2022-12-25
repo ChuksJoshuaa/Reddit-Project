@@ -13,7 +13,7 @@ import { withUrqlClient } from "next-urql";
 import Link from "next/link";
 import { useState } from "react";
 import { FaUser } from "react-icons/fa";
-import { Navbar, Updoot } from "../components";
+import { Loaders, Navbar, Updoot } from "../components";
 import {
   useDeletePostMutation,
   useMeQuery,
@@ -41,7 +41,7 @@ const Index = () => {
     return (
       <Flex>
         <Box m="auto" my={8}>
-          You do not have any posts for some reason
+          Something went wrong!!!
         </Box>
       </Flex>
     );
@@ -67,7 +67,9 @@ const Index = () => {
         mt={10}
       >
         {!data && fetching ? (
-          <div>Loading...</div>
+          <>
+            <Loaders />
+          </>
         ) : (
           <Stack spacing={8}>
             <Box fontSize="xl" textTransform="lowercase" mb={0}>
@@ -160,9 +162,6 @@ const Index = () => {
   );
 };
 
-//{ ssr: true } => we use this when we are trying to load on the server side.
-// Also, we use this when will are trying to do any queries on the web page
-//And if the data that is queried is important to SEO for better performance
 export default withUrqlClient(
   createUrqlClient,
   isServer() ? { ssr: true } : { ssr: false }

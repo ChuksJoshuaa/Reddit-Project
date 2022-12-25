@@ -100,7 +100,7 @@ export const createUrqlClient = (
   }
 
   return {
-    url: "http://localhost:5000/graphql",
+    url: process.env.NEXT_PUBLIC_API_URL as string,
     fetchOptions: {
       credentials: "include" as const,
       headers: cookie ? { cookie } : undefined,
