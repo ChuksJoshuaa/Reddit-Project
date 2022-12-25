@@ -40,9 +40,7 @@ const main = async () => {
   app.set("proxy", 1);
   app.use(
     cors({
-      origin: __prod__
-        ? process.env.CORS_ORIGIN
-        : process.env.CORS_LOCAL_ORIGIN,
+      origin: process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
