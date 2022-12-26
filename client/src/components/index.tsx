@@ -6,6 +6,8 @@ import Layout from "./Layout";
 import Updoot from "./Updoot";
 import Loaders from "./Loaders";
 import Footer from "./Footer";
+import Sidebar from "./Sidebar";
+import Body from "./Body";
 
 export {
   Wrapper,
@@ -16,4 +18,6 @@ export {
   Updoot,
   Loaders,
   Footer,
+  Sidebar,
+  Body,
 };
