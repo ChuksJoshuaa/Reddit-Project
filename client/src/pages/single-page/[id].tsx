@@ -6,9 +6,12 @@ import { Layout, Loaders } from "../../components";
 import EditDeleteButton from "../../components/EditDeleteButton";
 import { usePostQuery } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
+import { getUser } from "../../utils/getLocalStorage";
 
 const SinglePage = () => {
   const router = useRouter();
+  let userId = getUser().userId;
+  const authorId = Number(userId);
 
   const routerQuery = router.query;
   let result: any;
@@ -61,11 +64,13 @@ const SinglePage = () => {
             <Link href={`/`}>Go Back</Link>
           </Button>
 
-          <EditDeleteButton
-            id={item?.id}
-            authorId={item?.authorId}
-            check={true}
-          />
+          {authorId === item?.authorId ? (
+            <EditDeleteButton
+              id={item?.id}
+              authorId={item?.authorId}
+              check={true}
+            />
+          ) : null}
         </Flex>
       </Box>
     </Layout>

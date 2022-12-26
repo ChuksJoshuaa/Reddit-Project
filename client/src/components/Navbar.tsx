@@ -38,7 +38,7 @@ const Navbar = () => {
     body = (
       <Flex alignItems="center" mt={1} pr={5}>
         <Icon as={FaUser} boxSize={4} mr={1}></Icon>
-        <Box mr={2} fontSize="xl" textTransform="lowercase">
+        <Box mr={2} fontSize="xl" textTransform="capitalize">
           {userName}
         </Box>
         <Button
