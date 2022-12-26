@@ -42,7 +42,7 @@ const ChangePassword: NextPage<IProps> = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <Form>
+          <Form className="form-body">
             <Box mt={4}>
               <InputField
                 name="newPassword"

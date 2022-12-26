@@ -32,7 +32,10 @@ const Register = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <Form style={{ fontFamily: '"Rajdhani", sans-serif' }}>
+          <Form
+            style={{ fontFamily: '"Rajdhani", sans-serif' }}
+            className="form-body"
+          >
             <InputField name="username" placeholder="name" label="Username" />
             <Box mt={4}>
               <InputField

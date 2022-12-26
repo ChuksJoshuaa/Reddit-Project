@@ -6,7 +6,7 @@ import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import NextLink from "next/link";
+// import NextLink from "next/link";
 
 const Login = () => {
   const [, login] = useLoginMutation();
@@ -36,7 +36,7 @@ const Login = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <Form>
+          <Form className="form-body">
             <InputField
               name="email"
               placeholder="email"
@@ -63,9 +63,9 @@ const Login = () => {
               >
                 login
               </Button>
-              <NextLink href="/forgot-password" className="forgot-component">
+              {/* <NextLink href="/forgot-password" className="forgot-component">
                 Forgot-password?
-              </NextLink>
+              </NextLink> */}
             </Flex>
           </Form>
         )}

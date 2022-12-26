@@ -41,7 +41,10 @@ const CreatePost = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <Form style={{ fontFamily: '"Rajdhani", sans-serif' }}>
+          <Form
+            style={{ fontFamily: '"Rajdhani", sans-serif' }}
+            className="form-body"
+          >
             <InputField
               name="title"
               placeholder="title"

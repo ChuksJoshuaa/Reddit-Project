@@ -34,7 +34,10 @@ const ForgotPassword = () => {
           complete ? (
             <Box mt={2}>A confirmation message has been sent to your mail</Box>
           ) : (
-            <Form style={{ fontFamily: '"Rajdhani", sans-serif' }}>
+            <Form
+              style={{ fontFamily: '"Rajdhani", sans-serif' }}
+              className="form-body"
+            >
               <InputField
                 name="email"
                 placeholder="email"

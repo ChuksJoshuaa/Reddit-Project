@@ -5,5 +5,15 @@ import Navbar from "./Navbar";
 import Layout from "./Layout";
 import Updoot from "./Updoot";
 import Loaders from "./Loaders";
+import Footer from "./Footer";
 
-export { Wrapper, InputField, Navbar, TextField, Layout, Updoot, Loaders };
+export {
+  Wrapper,
+  InputField,
+  Navbar,
+  TextField,
+  Layout,
+  Updoot,
+  Loaders,
+  Footer,
+};
