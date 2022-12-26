@@ -12,6 +12,7 @@
     "@chakra-ui/theme-tools": "^2.0.13",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.9.0",
+    "@reduxjs/toolkit": "^1.9.1",
     "@urql/exchange-graphcache": "^5.0.5",
     "formik": "^2.2.9",
     "framer-motion": "^6.3.0",
@@ -24,6 +25,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-is": "^18.2.0",
+    "react-redux": "^8.0.5",
     "urql": "^3.0.3"
   },
   "devDependencies": {
