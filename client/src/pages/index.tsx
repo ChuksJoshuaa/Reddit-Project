@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon, Icon } from "@chakra-ui/icons";
+import { Icon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -13,16 +13,16 @@ import { withUrqlClient } from "next-urql";
 import Link from "next/link";
 import { useState } from "react";
 import { FaUser } from "react-icons/fa";
-import { Loaders, Navbar, Updoot } from "../components";
+import { Loaders, Navbar, Sidebar, Updoot } from "../components";
 import EditDeleteButton from "../components/EditDeleteButton";
-import { useDeletePostMutation, usePostsQuery } from "../generated/graphql";
+import { usePostsQuery } from "../generated/graphql";
+
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { itemProps, postsDataTypes } from "../utils/dataTypes";
 import { getUser } from "../utils/getLocalStorage";
 import { isServer } from "../utils/isServer";
 
 const Index = () => {
-  const [, deletePost] = useDeletePostMutation();
   const [variables, setVariables] = useState({
     limit: 5,
     cursor: null as null | string,
