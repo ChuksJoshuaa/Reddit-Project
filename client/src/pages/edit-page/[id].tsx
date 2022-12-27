@@ -3,7 +3,7 @@ import { Formik, Form } from "formik";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Layout, InputField, TextField } from "../../components";
+import { Layout, InputField, TextField, Loaders } from "../../components";
 import { usePostQuery, useUpdatePostMutation } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { getUser } from "../../utils/getLocalStorage";
@@ -39,7 +39,7 @@ const EditPage = () => {
   if (!item) {
     return (
       <Layout>
-        <Box>Loading....</Box>
+        <Loaders />
       </Layout>
     );
   }
@@ -68,7 +68,10 @@ const EditPage = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <Form style={{ fontFamily: '"Rajdhani", sans-serif' }}>
+          <Form
+            style={{ fontFamily: '"Rajdhani", sans-serif' }}
+            className="form-body"
+          >
             <Box mb={2} textAlign="center" color="red" fontSize="1rem">
               {errorMessage}
             </Box>
