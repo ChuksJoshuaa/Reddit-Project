@@ -39,6 +39,11 @@ class PaginatedPosts {
 
 @Resolver(Post)
 export class PostResolver {
+  @Query(() => [Updoot])
+  async updoots(): Promise<Updoot[]> {
+    return Updoot.find({});
+  }
+
   @FieldResolver(() => String)
   descriptionSnippet(@Root() root: Post) {
     return root.description.slice(0, 100);
@@ -69,14 +74,23 @@ export class PostResolver {
   @Mutation(() => Boolean)
   async vote(
     @Arg("postId", () => Int) postId: number,
+    @Arg("authorId", () => Int) authorId: number,
     @Arg("value", () => Int) value: number,
     @Ctx() { req }: MyContext
   ) {
     const isUpdoot = value !== -1;
     const realValue = isUpdoot ? 1 : -1;
-    const { userId } = req.session;
 
-    const updoot = await Updoot.findOne({ where: { postId, userId } });
+    let authorUserId = req.session.userId;
+    if (!authorUserId || authorUserId === undefined || authorUserId === null) {
+      authorUserId = Number(authorId);
+    }
+
+    const updoot = await Updoot.findOne({
+      where: { postId, userId: authorUserId },
+    });
+
+    let userId = authorUserId;
 
     if (updoot && updoot.value !== realValue) {
       let realValueDigit = 2 * realValue;
