@@ -77,6 +77,7 @@ export type MutationUpdatePostArgs = {
 
 
 export type MutationVoteArgs = {
+  authorId: Scalars['Int'];
   postId: Scalars['Int'];
   value: Scalars['Int'];
 };
@@ -221,6 +222,7 @@ export type UpdatePostMutation = { __typename?: 'Mutation', updatePost?: { __typ
 export type VoteMutationVariables = Exact<{
   value: Scalars['Int'];
   postId: Scalars['Int'];
+  authorId: Scalars['Int'];
 }>;
 
 
@@ -377,8 +379,8 @@ export function useUpdatePostMutation() {
   return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument);
 };
 export const VoteDocument = gql`
-    mutation Vote($value: Int!, $postId: Int!) {
-  vote(value: $value, postId: $postId)
+    mutation Vote($value: Int!, $postId: Int!, $authorId: Int!) {
+  vote(value: $value, postId: $postId, authorId: $authorId)
 }
     `;
 

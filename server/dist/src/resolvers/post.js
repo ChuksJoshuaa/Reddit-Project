@@ -58,6 +58,11 @@ PaginatedPosts = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], PaginatedPosts);
 let PostResolver = class PostResolver {
+    updoots() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return Updoot_entity_1.Updoot.find({});
+        });
+    }
     descriptionSnippet(root) {
         return root.description.slice(0, 100);
     }
@@ -77,12 +82,18 @@ let PostResolver = class PostResolver {
             return updoot ? updoot.value : null;
         });
     }
-    vote(postId, value, { req }) {
+    vote(postId, authorId, value, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const isUpdoot = value !== -1;
             const realValue = isUpdoot ? 1 : -1;
-            const { userId } = req.session;
-            const updoot = yield Updoot_entity_1.Updoot.findOne({ where: { postId, userId } });
+            let authorUserId = req.session.userId;
+            if (!authorUserId || authorUserId === undefined || authorUserId === null) {
+                authorUserId = Number(authorId);
+            }
+            const updoot = yield Updoot_entity_1.Updoot.findOne({
+                where: { postId, userId: authorUserId },
+            });
+            let userId = authorUserId;
             if (updoot && updoot.value !== realValue) {
                 let realValueDigit = 2 * realValue;
                 yield appDataSource_1.dataSource.transaction((tm) => __awaiter(this, void 0, void 0, function* () {
@@ -178,6 +189,12 @@ let PostResolver = class PostResolver {
     }
 };
 __decorate([
+    (0, type_graphql_1.Query)(() => [Updoot_entity_1.Updoot]),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PostResolver.prototype, "updoots", null);
+__decorate([
     (0, type_graphql_1.FieldResolver)(() => String),
     __param(0, (0, type_graphql_1.Root)()),
     __metadata("design:type", Function),
@@ -203,10 +220,11 @@ __decorate([
 __decorate([
     (0, type_graphql_1.Mutation)(() => Boolean),
     __param(0, (0, type_graphql_1.Arg)("postId", () => type_graphql_1.Int)),
-    __param(1, (0, type_graphql_1.Arg)("value", () => type_graphql_1.Int)),
-    __param(2, (0, type_graphql_1.Ctx)()),
+    __param(1, (0, type_graphql_1.Arg)("authorId", () => type_graphql_1.Int)),
+    __param(2, (0, type_graphql_1.Arg)("value", () => type_graphql_1.Int)),
+    __param(3, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, Object]),
+    __metadata("design:paramtypes", [Number, Number, Number, Object]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "vote", null);
 __decorate([

@@ -1,6 +1,7 @@
 import React from "react";
 import { Footer, Wrapper } from "./index";
 import { WrapperVariant } from "./Wrapper";
+
 interface LayoutProps {
   variant?: WrapperVariant;
   children: any;

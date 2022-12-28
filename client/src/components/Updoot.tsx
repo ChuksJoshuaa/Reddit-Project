@@ -3,12 +3,15 @@ import { Flex, IconButton, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useVoteMutation } from "../generated/graphql";
 import { itemSingleProps } from "../utils/dataTypes";
+import { getUser } from "../utils/getLocalStorage";
 
 const Updoot = ({ item }: itemSingleProps) => {
   const [loadingState, setLoadingState] = useState<
     "updoot-loading" | "downdoot-loading" | "not-loading"
   >("not-loading");
   const [, vote] = useVoteMutation();
+  let userId = getUser().userId;
+  const authorId = Number(userId);
 
   return (
     <>
@@ -26,6 +29,7 @@ const Updoot = ({ item }: itemSingleProps) => {
             await vote({
               postId: item.id,
               value: 1,
+              authorId,
             });
             setLoadingState("not-loading");
           }}
@@ -45,6 +49,7 @@ const Updoot = ({ item }: itemSingleProps) => {
             await vote({
               postId: item.id,
               value: -1,
+              authorId,
             });
             setLoadingState("not-loading");
           }}

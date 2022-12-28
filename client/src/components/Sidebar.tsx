@@ -1,38 +1,49 @@
 import { Box, Button, Flex, Icon } from "@chakra-ui/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { FaAlignJustify, FaUser } from "react-icons/fa";
-import { useMutation } from "urql";
+import React, { FC } from "react";
+import { FaTimes, FaUser } from "react-icons/fa";
+import { openSidebar } from "../redux/features/posts/postSlice";
+import { imageUrl } from "../utils/image";
+import { useAppDispatch } from "../redux/hooks";
 import { useMeQuery } from "../generated/graphql";
+import { isServer } from "../utils/isServer";
+import { useMutation } from "urql";
 import { LogoutDocument } from "../mutations/userMutations";
 import { getUser } from "../utils/getLocalStorage";
-import { imageUrl } from "../utils/image";
-import { isServer } from "../utils/isServer";
-import { openSidebar } from "../redux/features/posts/postSlice";
-import { useAppDispatch } from "../redux/hooks";
+import { useRouter } from "next/router";
 
-const Navbar = () => {
-  const router = useRouter();
+const Sidebar = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [{ data, fetching }] = useMeQuery({
+    pause: isServer() as any,
+  });
+
   const [{ fetching: logoutFetching }, logout] = useMutation(LogoutDocument);
 
   const checkUser = Object.keys(getUser()).length;
   const userName = getUser()?.userName;
 
-  const [{ data, fetching }] = useMeQuery({
-    pause: isServer() as any,
-  });
-
   let body = null;
-
   if (fetching) {
   } else if (!data?.me && checkUser === 0) {
     body = (
       <Box fontSize="xl" mt={1} pr={5}>
-        <Button colorScheme="teal" size="md" textTransform="lowercase" mr={2}>
+        <Button
+          colorScheme="teal"
+          size="md"
+          textTransform="lowercase"
+          mr={2}
+          onClick={() => dispatch(openSidebar(false))}
+        >
           <Link href="/login">Login</Link>
         </Button>
-        <Button colorScheme="teal" size="md" textTransform="lowercase">
+        <Button
+          colorScheme="teal"
+          size="md"
+          textTransform="lowercase"
+          onClick={() => dispatch(openSidebar(false))}
+        >
           <Link href="/register">Register</Link>
         </Button>
       </Box>
@@ -47,6 +58,7 @@ const Navbar = () => {
         <Button
           onClick={async () => {
             await logout();
+            dispatch(openSidebar(false));
             localStorage.clear();
             router.reload();
           }}
@@ -61,48 +73,51 @@ const Navbar = () => {
       </Flex>
     );
   }
+
   return (
     <Box
+      width="100vw"
+      height="20vh"
+      className="sidebar"
       style={{
         fontFamily: '"Rajdhani", sans-serif',
-        backgroundColor: "rgba(210, 214, 214, 0.7)",
       }}
     >
-      <Flex
-        pt={2}
-        pb={2}
-        maxW="950px"
-        mx="auto"
-        fontWeight="medium"
-        justify="space-between"
-      >
+      <Flex justify="space-between" alignItems="center">
         <Flex
           className="navbar-component"
           justify="space-between"
           alignItems="center"
         >
-          <Box fontSize="2xl">
+          <Box
+            fontSize="2xl"
+            pt={1}
+            onClick={() => dispatch(openSidebar(false))}
+          >
             <img src={imageUrl} alt="image-icon" className="image-component" />
           </Box>
-          <Box fontSize="2xl" textTransform="capitalize" fontWeight="bold">
+          <Box
+            fontSize="2xl"
+            textTransform="capitalize"
+            fontWeight="bold"
+            pt={1}
+            onClick={() => dispatch(openSidebar(false))}
+          >
             <Link href="/" style={{ marginRight: "1em" }}>
               Reddit
             </Link>
           </Box>
         </Flex>
-        <Box ml={"auto"} className="hide-nav">
-          {body}
-        </Box>
-        <Box
-          ml={"auto"}
-          className="show-nav"
-          onClick={() => dispatch(openSidebar(true))}
-        >
-          <Icon as={FaAlignJustify} boxSize={7} mr={2} mt={3}></Icon>
+        <Box onClick={() => dispatch(openSidebar(false))}>
+          <Icon as={FaTimes} boxSize={7} mr={2} mt={3} color="tomato"></Icon>
         </Box>
       </Flex>
+
+      <Box p={2} className="sidebar-body">
+        {body}
+      </Box>
     </Box>
   );
 };
 
-export default Navbar;
+export default Sidebar;
