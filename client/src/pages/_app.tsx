@@ -7,12 +7,32 @@ import { store } from "../redux/store";
 import { Provider } from "react-redux";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 import { serverRoute } from "../utils/serverRoute";
+import { PaginatedPosts } from "../generated/graphql";
 
 const Url = serverRoute(process.env.NEXT_PUBLIC_NODE_ENV as string);
 
 const client = new ApolloClient({
   uri: Url,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          posts: {
+            keyArgs: [], //you can add "limit" inside the array
+            merge(
+              existing: PaginatedPosts | undefined,
+              incoming: PaginatedPosts
+            ): PaginatedPosts {
+              return {
+                ...incoming,
+                posts: [...(existing?.posts || []), ...incoming.posts],
+              };
+            },
+          },
+        },
+      },
+    },
+  }),
   credentials: "include",
 });
 

@@ -1,6 +1,6 @@
+import { useApolloClient } from "@apollo/client";
 import { Box, Button, Flex, Icon } from "@chakra-ui/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { FaAlignJustify, FaUser } from "react-icons/fa";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { openSidebar } from "../redux/features/posts/postSlice";
@@ -10,8 +10,8 @@ import { imageUrl } from "../utils/image";
 import { isServer } from "../utils/isServer";
 
 const Navbar = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
+  const apolloClient = useApolloClient();
 
   const [logout, { loading: logoutFetching }] = useLogoutMutation();
 
@@ -47,8 +47,8 @@ const Navbar = () => {
         <Button
           onClick={async () => {
             await logout();
+            await apolloClient.resetStore();
             localStorage.clear();
-            router.reload();
           }}
           isLoading={logoutFetching}
           fontSize="xl"

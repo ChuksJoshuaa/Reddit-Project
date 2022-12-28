@@ -10,22 +10,21 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { Loaders, Navbar, Updoot } from "../components";
 import EditDeleteButton from "../components/EditDeleteButton";
-import { usePostsQuery } from "../generated/graphql";
+import { PostsQuery, usePostsQuery } from "../generated/graphql";
 
 import { itemProps, postsDataTypes } from "../utils/dataTypes";
 import { getUser } from "../utils/getLocalStorage";
 
 const Index = () => {
-  const [variables, setVariables] = useState({
-    limit: 5,
-    cursor: null as null | string,
-  });
-  const { data, loading } = usePostsQuery({
-    variables,
+  const { data, loading, fetchMore, variables } = usePostsQuery({
+    variables: {
+      limit: 5,
+      cursor: null as null | string,
+    },
+    notifyOnNetworkStatusChange: true,
   });
 
   if (!loading && !data) {
@@ -39,9 +38,29 @@ const Index = () => {
   }
 
   const loadMore = (data: postsDataTypes) => {
-    setVariables({
-      limit: variables.limit,
-      cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
+    fetchMore({
+      variables: {
+        limit: variables?.limit,
+        cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
+      },
+
+      // updateQuery: (previousValue, { fetchMoreResult }): PostsQuery => {
+      //   if (!fetchMoreResult) {
+      //     return previousValue as PostsQuery;
+      //   }
+
+      //   return {
+      //     __typename: "Query",
+      //     posts: {
+      //       __typename: "PaginatedPosts",
+      //       hasMore: (fetchMoreResult as PostsQuery).posts.hasMore,
+      //       posts: [
+      //         ...(previousValue as PostsQuery).posts.posts,
+      //         ...(fetchMoreResult as PostsQuery).posts.posts,
+      //       ],
+      //     },
+      //   };
+      // },
     });
   };
 
