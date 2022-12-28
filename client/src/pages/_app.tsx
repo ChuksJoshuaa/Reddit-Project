@@ -6,10 +6,8 @@ import { Body } from "../components";
 import { store } from "../redux/store";
 import { Provider } from "react-redux";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
-import { serverRoute } from "../utils/serverRoute";
+import { Url } from "../utils/serverRoute";
 import { PaginatedPosts } from "../generated/graphql";
-
-const Url = serverRoute(process.env.NEXT_PUBLIC_NODE_ENV as string);
 
 const client = new ApolloClient({
   uri: Url,

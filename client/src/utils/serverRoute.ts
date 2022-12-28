@@ -11,3 +11,5 @@ export const serverRoute = (env: string): string | undefined => {
 
   return;
 };
+
+export const Url = serverRoute(process.env.NEXT_PUBLIC_NODE_ENV as string);
