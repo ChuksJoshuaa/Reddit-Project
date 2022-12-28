@@ -9,29 +9,26 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { withUrqlClient } from "next-urql";
 import Link from "next/link";
 import { useState } from "react";
 import { FaUser } from "react-icons/fa";
-import { Loaders, Navbar, Sidebar, Updoot } from "../components";
+import { Loaders, Navbar, Updoot } from "../components";
 import EditDeleteButton from "../components/EditDeleteButton";
 import { usePostsQuery } from "../generated/graphql";
 
-import { createUrqlClient } from "../utils/createUrqlClient";
 import { itemProps, postsDataTypes } from "../utils/dataTypes";
 import { getUser } from "../utils/getLocalStorage";
-import { isServer } from "../utils/isServer";
 
 const Index = () => {
   const [variables, setVariables] = useState({
     limit: 5,
     cursor: null as null | string,
   });
-  const [{ data, fetching }] = usePostsQuery({
+  const { data, loading } = usePostsQuery({
     variables,
   });
 
-  if (!fetching && !data) {
+  if (!loading && !data) {
     return (
       <Flex>
         <Box m="auto" my={8}>
@@ -59,7 +56,7 @@ const Index = () => {
         style={{ fontFamily: '"Rajdhani", sans-serif' }}
         mt={10}
       >
-        {!data && fetching ? (
+        {!data && loading ? (
           <>
             <Loaders />
           </>
@@ -124,7 +121,7 @@ const Index = () => {
         {data && data.posts.hasMore ? (
           <Flex>
             <Button
-              isLoading={fetching}
+              isLoading={loading}
               m="auto"
               my={8}
               onClick={() => loadMore(data as postsDataTypes)}
@@ -138,7 +135,4 @@ const Index = () => {
   );
 };
 
-export default withUrqlClient(
-  createUrqlClient,
-  isServer() ? { ssr: true } : { ssr: false }
-)(Index);
+export default Index;

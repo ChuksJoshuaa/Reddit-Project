@@ -16,7 +16,7 @@ const EditDeleteButton: React.FC<EditDeleteProps> = ({
   authorId,
   check,
 }) => {
-  const [, deletePost] = useDeletePostMutation();
+  const [deletePost] = useDeletePostMutation();
 
   const router = useRouter();
 
@@ -34,8 +34,10 @@ const EditDeleteButton: React.FC<EditDeleteProps> = ({
             color="red.500"
             onClick={() => {
               deletePost({
-                id,
-                authorId,
+                variables: {
+                  id,
+                  authorId,
+                },
               });
 
               check ? router.push("/") : undefined;

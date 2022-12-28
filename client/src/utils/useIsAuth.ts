@@ -4,7 +4,7 @@ import { useMeQuery } from "../generated/graphql";
 import { getUser } from "./getLocalStorage";
 
 export const useIsAuth = () => {
-  const [{ data }] = useMeQuery();
+  const { data } = useMeQuery();
 
   const checkUser = Object.keys(getUser()).length;
 

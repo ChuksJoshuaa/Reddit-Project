@@ -2,30 +2,30 @@ import { Box, Button, Flex, Icon } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaAlignJustify, FaUser } from "react-icons/fa";
-import { useMutation } from "urql";
-import { useMeQuery } from "../generated/graphql";
-import { LogoutDocument } from "../mutations/userMutations";
+import { useLogoutMutation, useMeQuery } from "../generated/graphql";
+import { openSidebar } from "../redux/features/posts/postSlice";
+import { useAppDispatch } from "../redux/hooks";
 import { getUser } from "../utils/getLocalStorage";
 import { imageUrl } from "../utils/image";
 import { isServer } from "../utils/isServer";
-import { openSidebar } from "../redux/features/posts/postSlice";
-import { useAppDispatch } from "../redux/hooks";
 
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [{ fetching: logoutFetching }, logout] = useMutation(LogoutDocument);
+
+  const [logout, { loading: logoutFetching }] = useLogoutMutation();
 
   const checkUser = Object.keys(getUser()).length;
   const userName = getUser()?.userName;
 
-  const [{ data, fetching }] = useMeQuery({
-    pause: isServer() as any,
+  //isServer is used for server side rendering. In urql we use pause while for apollo/client we use skip
+  const { data, loading } = useMeQuery({
+    skip: isServer() as boolean,
   });
 
   let body = null;
 
-  if (fetching) {
+  if (loading) {
   } else if (!data?.me && checkUser === 0) {
     body = (
       <Box fontSize="xl" mt={1} pr={5}>

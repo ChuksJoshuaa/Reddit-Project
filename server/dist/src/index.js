@@ -79,7 +79,6 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
             }),
         ],
-        introspection: constant_1.__prod__,
         context: ({ req, res }) => ({
             req,
             res,

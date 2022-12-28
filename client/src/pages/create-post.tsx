@@ -10,7 +10,7 @@ import { getUser } from "../utils/getLocalStorage";
 import { useIsAuth } from "../utils/useIsAuth";
 
 const CreatePost = () => {
-  const [, createPost] = useCreatePostMutation();
+  const [createPost] = useCreatePostMutation();
   const router = useRouter();
 
   //check if the user is logged in
@@ -24,16 +24,13 @@ const CreatePost = () => {
       <Formik
         initialValues={{ authorId, title: "", description: "" }}
         onSubmit={async (values) => {
-          const response = await createPost({ input: values });
-          if (response.error) {
-            const errorType = response.error?.graphQLErrors;
-            for (let err of errorType) {
-              if (
-                err.extensions.code === "UNAUTHENTICATED" ||
-                err.message.includes("logged in")
-              ) {
-                router.push("/login");
-              }
+          const response = await createPost({
+            variables: { input: values },
+          });
+          if (response.errors) {
+            const errorType = response.errors;
+            if (errorType) {
+              router.push("/login");
             }
           } else {
             router.push("/");

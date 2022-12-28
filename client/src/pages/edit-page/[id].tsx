@@ -9,7 +9,7 @@ import { createUrqlClient } from "../../utils/createUrqlClient";
 import { getUser } from "../../utils/getLocalStorage";
 
 const EditPage = () => {
-  const [, updatePost] = useUpdatePostMutation();
+  const [updatePost] = useUpdatePostMutation();
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
@@ -19,7 +19,7 @@ const EditPage = () => {
     result = Number(router.query.id);
   }
 
-  const [{ data, error }] = usePostQuery({
+  const { data, error } = usePostQuery({
     variables: {
       id: result,
     },
@@ -56,10 +56,12 @@ const EditPage = () => {
           description: item?.description,
         }}
         onSubmit={async (values) => {
-          const response = await updatePost({ ...values, id: result });
+          const response = await updatePost({
+            variables: { ...values, id: result },
+          });
           if (response.data?.updatePost === null) {
             setErrorMessage(
-              "You cannot update this post due to some issues, Please try again!!!"
+              "Cannot edit, make sure you are logged in and try again!!!"
             );
             return;
           } else {

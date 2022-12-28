@@ -9,7 +9,7 @@ const Updoot = ({ item }: itemSingleProps) => {
   const [loadingState, setLoadingState] = useState<
     "updoot-loading" | "downdoot-loading" | "not-loading"
   >("not-loading");
-  const [, vote] = useVoteMutation();
+  const [vote] = useVoteMutation();
   let userId = getUser().userId;
   const authorId = Number(userId);
 
@@ -27,9 +27,11 @@ const Updoot = ({ item }: itemSingleProps) => {
             }
             setLoadingState("updoot-loading");
             await vote({
-              postId: item.id,
-              value: 1,
-              authorId,
+              variables: {
+                postId: item.id,
+                value: 1,
+                authorId,
+              },
             });
             setLoadingState("not-loading");
           }}
@@ -47,9 +49,11 @@ const Updoot = ({ item }: itemSingleProps) => {
             }
             setLoadingState("downdoot-loading");
             await vote({
-              postId: item.id,
-              value: -1,
-              authorId,
+              variables: {
+                postId: item.id,
+                value: 1,
+                authorId,
+              },
             });
             setLoadingState("not-loading");
           }}

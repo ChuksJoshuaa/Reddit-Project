@@ -83,7 +83,7 @@ const main = async () => {
         },
       }),
     ],
-    introspection: __prod__,
+    // introspection: __prod__,  //Always comment out this during development. It is very essential
     context: ({ req, res }) => ({
       req,
       res,

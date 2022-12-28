@@ -19,7 +19,7 @@ const SinglePage = () => {
     result = Number(router.query.id);
   }
 
-  const [{ data, error }] = usePostQuery({
+  const { data, error } = usePostQuery({
     variables: {
       id: result,
     },

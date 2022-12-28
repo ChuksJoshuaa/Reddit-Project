@@ -8,7 +8,7 @@ import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Register = () => {
-  const [, register] = useRegisterMutation();
+  const [register] = useRegisterMutation();
   const Router = useRouter();
 
   return (
@@ -16,7 +16,9 @@ const Register = () => {
       <Formik
         initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await register(values);
+          const response = await register({
+            variables: values,
+          });
 
           if (response.data?.register.errors) {
             setErrors(toErrorMap(response.data?.register.errors));
