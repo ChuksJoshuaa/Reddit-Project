@@ -1,11 +1,9 @@
 import { Box, Button } from "@chakra-ui/react";
-import { Formik, Form } from "formik";
-import { withUrqlClient } from "next-urql";
+import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
-import { Layout, InputField, TextField, Loaders } from "../../components";
+import { useState } from "react";
+import { InputField, Layout, Loaders, TextField } from "../../components";
 import { usePostQuery, useUpdatePostMutation } from "../../generated/graphql";
-import { createUrqlClient } from "../../utils/createUrqlClient";
 import { getUser } from "../../utils/getLocalStorage";
 
 const EditPage = () => {
@@ -105,4 +103,4 @@ const EditPage = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(EditPage);
+export default EditPage;

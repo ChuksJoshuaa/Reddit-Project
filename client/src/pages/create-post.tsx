@@ -1,11 +1,8 @@
 import { Box, Button } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
-import React from "react";
 import { InputField, Layout, TextField } from "../components";
 import { useCreatePostMutation } from "../generated/graphql";
-import { createUrqlClient } from "../utils/createUrqlClient";
 import { getUser } from "../utils/getLocalStorage";
 import { useIsAuth } from "../utils/useIsAuth";
 
@@ -70,4 +67,4 @@ const CreatePost = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(CreatePost);
+export default CreatePost;

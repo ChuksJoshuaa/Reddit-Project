@@ -1,11 +1,9 @@
-import { Form, Formik } from "formik";
 import { Box, Button } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import { InputField, Wrapper } from "../components";
 import { useRegisterMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
-import { useRouter } from "next/router";
-import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Register = () => {
   const [register] = useRegisterMutation();
@@ -70,5 +68,4 @@ const Register = () => {
   );
 };
 
-//Without adding this, you cannot make a post request to server url, instead it will return to the default client url
-export default withUrqlClient(createUrqlClient)(Register);
+export default Register;

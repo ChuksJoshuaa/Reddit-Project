@@ -1,11 +1,9 @@
 import { Box, Button, Divider, Flex } from "@chakra-ui/react";
-import { withUrqlClient } from "next-urql";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Layout, Loaders } from "../../components";
 import EditDeleteButton from "../../components/EditDeleteButton";
 import { usePostQuery } from "../../generated/graphql";
-import { createUrqlClient } from "../../utils/createUrqlClient";
 import { getUser } from "../../utils/getLocalStorage";
 
 const SinglePage = () => {
@@ -77,4 +75,4 @@ const SinglePage = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(SinglePage);
+export default SinglePage;
