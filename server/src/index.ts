@@ -13,7 +13,7 @@ import connectRedis from "connect-redis";
 import session from "express-session";
 const RedisStore = connectRedis(session);
 import cors from "cors";
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { dataSource } from "./appDataSource";
 import { createUserLoader } from "../utils/createUserLoader";
@@ -34,8 +34,8 @@ const main = async () => {
 
   const app = express();
 
-  app.set("trust proxy", 1);
-  app.use(cookieParser());
+  app.set("trust proxy", __prod__);
+  // app.use(cookieParser());
 
   const redis = new Redis(process.env.REDIS_URL as string);
 
