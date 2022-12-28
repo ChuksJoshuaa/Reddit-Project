@@ -41,7 +41,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const PORT = process.env.PORT || 5000;
     const secret_key = process.env.SESSION_SECRET;
     const app = (0, express_1.default)();
-    app.set("trust proxy", 1);
+    app.set("trust proxy", constant_1.__prod__);
     const redis = new ioredis_1.default(process.env.REDIS_URL);
     app.use((0, cors_1.default)({
         origin: process.env.CORS_ORIGIN,
@@ -57,7 +57,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
             httpOnly: constant_1.__prod__,
-            sameSite: "lax",
+            sameSite: constant_1.__prod__ ? "none" : "lax",
             secure: constant_1.__prod__,
             domain: constant_1.__prod__ ? ".vercel.app" : undefined,
         },

@@ -34,7 +34,7 @@ const main = async () => {
 
   const app = express();
 
-  app.set("trust proxy", 1);
+  app.set("trust proxy", __prod__);
   // app.use(cookieParser());
 
   const redis = new Redis(process.env.REDIS_URL as string);
@@ -57,7 +57,7 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: __prod__,
-        sameSite: "lax",
+        sameSite: __prod__ ? "none" : "lax",
         secure: __prod__,
         domain: __prod__ ? ".vercel.app" : undefined,
       },
