@@ -5,6 +5,7 @@ import { useState } from "react";
 import { InputField, Layout, Loaders, TextField } from "../../components";
 import { usePostQuery, useUpdatePostMutation } from "../../generated/graphql";
 import { getUser } from "../../utils/getLocalStorage";
+import { withApollo } from "../../utils/withApollo";
 
 const EditPage = () => {
   const [updatePost] = useUpdatePostMutation();
@@ -103,4 +104,4 @@ const EditPage = () => {
   );
 };
 
-export default EditPage;
+export default withApollo({ ssr: false })(EditPage);

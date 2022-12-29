@@ -3,6 +3,7 @@ import { Form, Formik } from "formik";
 import { useState } from "react";
 import { InputField, Wrapper } from "../components";
 import { useForgotPasswordMutation } from "../generated/graphql";
+import { withApollo } from "../utils/withApollo";
 
 const ForgotPassword = () => {
   const [forgotPassword] = useForgotPasswordMutation();
@@ -65,5 +66,4 @@ const ForgotPassword = () => {
     </Wrapper>
   );
 };
-
-export default ForgotPassword;
+export default withApollo({ ssr: false })(ForgotPassword);

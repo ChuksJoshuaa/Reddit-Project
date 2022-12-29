@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { InputField, Wrapper } from "../components";
 import { useRegisterMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
+import { withApollo } from "../utils/withApollo";
 
 const Register = () => {
   const [register] = useRegisterMutation();
@@ -68,4 +69,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default withApollo({ ssr: false })(Register);

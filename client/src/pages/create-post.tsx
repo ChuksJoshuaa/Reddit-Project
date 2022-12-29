@@ -5,6 +5,7 @@ import { InputField, Layout, TextField } from "../components";
 import { useCreatePostMutation } from "../generated/graphql";
 import { getUser } from "../utils/getLocalStorage";
 import { useIsAuth } from "../utils/useIsAuth";
+import { withApollo } from "../utils/withApollo";
 
 const CreatePost = () => {
   const [createPost] = useCreatePostMutation();
@@ -67,4 +68,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default withApollo({ ssr: false })(CreatePost);

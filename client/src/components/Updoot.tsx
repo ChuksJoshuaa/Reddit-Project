@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useVoteMutation } from "../generated/graphql";
 import { itemSingleProps } from "../utils/dataTypes";
 import { getUser } from "../utils/getLocalStorage";
+import { withApollo } from "../utils/withApollo";
 
 const Updoot = ({ item }: itemSingleProps) => {
   const [loadingState, setLoadingState] = useState<
@@ -63,4 +64,4 @@ const Updoot = ({ item }: itemSingleProps) => {
   );
 };
 
-export default Updoot;
+export default withApollo({ ssr: false })(Updoot);

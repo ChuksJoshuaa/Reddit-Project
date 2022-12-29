@@ -5,6 +5,7 @@ import { Layout, Loaders } from "../../components";
 import EditDeleteButton from "../../components/EditDeleteButton";
 import { usePostQuery } from "../../generated/graphql";
 import { getUser } from "../../utils/getLocalStorage";
+import { withApollo } from "../../utils/withApollo";
 
 const SinglePage = () => {
   const router = useRouter();
@@ -75,4 +76,4 @@ const SinglePage = () => {
   );
 };
 
-export default SinglePage;
+export default withApollo({ ssr: false })(SinglePage);

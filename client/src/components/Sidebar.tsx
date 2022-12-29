@@ -1,31 +1,30 @@
+import { useApolloClient } from "@apollo/client";
 import { Box, Button, Flex, Icon } from "@chakra-ui/react";
 import Link from "next/link";
-import React, { FC } from "react";
 import { FaTimes, FaUser } from "react-icons/fa";
+import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { openSidebar } from "../redux/features/posts/postSlice";
-import { imageUrl } from "../utils/image";
 import { useAppDispatch } from "../redux/hooks";
-import { useMeQuery } from "../generated/graphql";
-import { isServer } from "../utils/isServer";
-import { useMutation } from "urql";
-import { LogoutDocument } from "../mutations/userMutations";
 import { getUser } from "../utils/getLocalStorage";
-import { useRouter } from "next/router";
+import { imageUrl } from "../utils/image";
+import { isServer } from "../utils/isServer";
+import { withApollo } from "../utils/withApollo";
 
 const Sidebar = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
-  const [{ data, fetching }] = useMeQuery({
-    pause: isServer() as any,
+  const apolloClient = useApolloClient();
+
+  const { data, loading } = useMeQuery({
+    skip: isServer() as boolean,
   });
 
-  const [{ fetching: logoutFetching }, logout] = useMutation(LogoutDocument);
+  const [logout, { loading: logoutFetching }] = useLogoutMutation();
 
   const checkUser = Object.keys(getUser()).length;
   const userName = getUser()?.userName;
 
   let body = null;
-  if (fetching) {
+  if (loading) {
   } else if (!data?.me && checkUser === 0) {
     body = (
       <Box fontSize="xl" mt={1} pr={5}>
@@ -60,7 +59,7 @@ const Sidebar = () => {
             await logout();
             dispatch(openSidebar(false));
             localStorage.clear();
-            router.reload();
+            await apolloClient.resetStore();
           }}
           isLoading={logoutFetching}
           fontSize="xl"
@@ -120,4 +119,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default withApollo({ ssr: false })(Sidebar);

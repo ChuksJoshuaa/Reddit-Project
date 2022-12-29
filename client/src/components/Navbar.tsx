@@ -8,6 +8,7 @@ import { useAppDispatch } from "../redux/hooks";
 import { getUser } from "../utils/getLocalStorage";
 import { imageUrl } from "../utils/image";
 import { isServer } from "../utils/isServer";
+import { withApollo } from "../utils/withApollo";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -47,8 +48,8 @@ const Navbar = () => {
         <Button
           onClick={async () => {
             await logout();
-            await apolloClient.resetStore();
             localStorage.clear();
+            await apolloClient.resetStore();
           }}
           isLoading={logoutFetching}
           fontSize="xl"
@@ -105,4 +106,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default withApollo({ ssr: false })(Navbar);

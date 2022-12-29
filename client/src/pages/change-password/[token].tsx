@@ -7,6 +7,7 @@ import { useState } from "react";
 import { InputField, Wrapper } from "../../components";
 import { useChangePasswordMutation } from "../../generated/graphql";
 import { toErrorMap } from "../../utils/toErrorMap";
+import { withApollo } from "../../utils/withApollo";
 
 interface IProps {
   token: string;
@@ -85,4 +86,4 @@ const ChangePassword: NextPage<IProps> = () => {
   );
 };
 
-export default ChangePassword;
+export default withApollo({ ssr: false })(ChangePassword);

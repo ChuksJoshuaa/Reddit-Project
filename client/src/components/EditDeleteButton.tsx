@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { useDeletePostMutation } from "../generated/graphql";
+import { withApollo } from "../utils/withApollo";
 
 interface EditDeleteProps {
   id: number;
@@ -49,4 +50,4 @@ const EditDeleteButton: React.FC<EditDeleteProps> = ({
   );
 };
 
-export default EditDeleteButton;
+export default withApollo({ ssr: false })(EditDeleteButton);

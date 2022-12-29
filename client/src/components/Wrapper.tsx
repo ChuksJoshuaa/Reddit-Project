@@ -1,6 +1,5 @@
-import React from "react";
 import { Box } from "@chakra-ui/react";
-import Navbar from "./Navbar";
+import React from "react";
 
 export type WrapperVariant = "small" | "regular";
 interface WrapperProps {
@@ -11,7 +10,6 @@ interface WrapperProps {
 const Wrapper: React.FC<WrapperProps> = ({ children, variant = "regular" }) => {
   return (
     <>
-      <Navbar />
       <Box
         mt={8}
         mx="auto"
