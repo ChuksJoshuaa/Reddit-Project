@@ -106,4 +106,4 @@ const Navbar = () => {
   );
 };
 
-export default withApollo({ ssr: false })(Navbar);
+export default withApollo({ ssr: true })(Navbar);

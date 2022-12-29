@@ -119,4 +119,4 @@ const Sidebar = () => {
   );
 };
 
-export default withApollo({ ssr: false })(Sidebar);
+export default withApollo({ ssr: true })(Sidebar);

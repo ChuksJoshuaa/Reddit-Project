@@ -76,4 +76,4 @@ const SinglePage = () => {
   );
 };
 
-export default withApollo({ ssr: false })(SinglePage);
+export default withApollo({ ssr: true })(SinglePage);

@@ -152,4 +152,4 @@ const Index = () => {
   );
 };
 
-export default withApollo({ ssr: false })(Index);
+export default withApollo({ ssr: true })(Index);
