@@ -39,6 +39,10 @@ const EditDeleteButton: React.FC<EditDeleteProps> = ({
                   id,
                   authorId,
                 },
+
+                update: (cache) => {
+                  cache.evict({ id: "Post:" + id });
+                },
               });
 
               check ? router.push("/") : undefined;
