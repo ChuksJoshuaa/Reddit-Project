@@ -125,6 +125,7 @@ mutation Login($email: String!, $password: String!) {
       id
       username
       email
+      createdAt
     }
   }
 }
