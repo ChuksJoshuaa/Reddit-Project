@@ -1,6 +1,6 @@
 # Reddit Full Stack Typescript Application
 
-<img src="https://res.cloudinary.com/chuksmbanaso/image/upload/v1671505260/media/Screenshot_297_yrmsqk.png" title="icon" alt="icon">
+<img src="https://res.cloudinary.com/chuksmbanaso/image/upload/v1671505260/media/Screenshot_297_yrmsqk.png" title="icon" alt="icon">.
 ## GraphQL Queries & Mutations
 
 ## Queries
