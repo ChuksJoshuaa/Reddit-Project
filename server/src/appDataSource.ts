@@ -6,6 +6,7 @@ import { User } from "./entities/User.entity";
 import { Updoot } from "./entities/Updoot.entity";
 import path from "path";
 import { __prod__ } from "./constant";
+// require("pg");
 
 let portNumber = Number(process.env.DATABASE_PORT);
 
@@ -13,7 +14,10 @@ export const dataSource = new DataSource({
   type: "postgres",
   port: portNumber,
   url: process.env.DATABASE_URL,
-  ssl: __prod__ ? true : false,
+  ssl: __prod__,
+  extra: {
+    ssl: true,
+  },
   synchronize: !__prod__,
   logging: !__prod__,
   migrations: [path.join(__dirname, "./migrations/*")],

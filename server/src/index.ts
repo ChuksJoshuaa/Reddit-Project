@@ -84,6 +84,8 @@ const main = async () => {
       }),
     ],
     introspection: __prod__,
+    persistedQueries: false,
+    cache: "bounded",
     context: ({ req, res }) => ({
       req,
       res,
